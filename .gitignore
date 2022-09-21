@@ -30,3 +30,11 @@
 *.exe
 *.out
 *.app
+
+#Folder to not commit
+**/build/
+**/.vs/
+**/x64/
+
+#Visual studio files
+*.sln
