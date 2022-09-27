@@ -4,3 +4,6 @@
 [submodule "External/GLFW"]
 	path = External/GLFW
 	url = https://github.com/glfw/glfw.git
+[submodule "lab1/HelloOpenGL"]
+	path = lab1/HelloOpenGL
+	url = https://github.com/sasukeruud/OpenGLFirst.git
