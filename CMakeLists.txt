@@ -11,9 +11,13 @@ add_subdirectory(External/GLFW)
 add_subdirectory(External/glad)
 
 #########################
-add_subdirectory(Engine/GeometricTools)
-add_subdirectory(Engine/GLFWApplication)
+#add_subdirectory(Engine/GeometricTools)
+#add_subdirectory(Engine/GLFWApplication)
+#add_subdirectory(Engine/VertexBuffer)
+#add_subdirectory(Engine/IndexBuffer)
+add_subdirectory(Engine)
 
 add_subdirectory(engineTest)
 add_subdirectory(lab1/HelloOpenGL)
-add_subdirectory(lab2)
+add_subdirectory(lab1/Hello)
+#add_subdirectory(lab2)
