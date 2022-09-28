@@ -8,5 +8,5 @@
 	path = lab1/HelloOpenGL
 	url = https://github.com/sasukeruud/OpenGLFirst.git
 [submodule "lab1/HelloOpenGL_v2"]
-	path = lab1/HelloOpenGL
+	path = lab1/HelloOpenGL_v2
 	url = https://github.com/sasukeruud/HelloOpenGL_v2.git
