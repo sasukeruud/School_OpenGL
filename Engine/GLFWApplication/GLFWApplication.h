@@ -1,4 +1,6 @@
 #include <iostream>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 class GLFWApplication
 {
@@ -6,6 +8,8 @@ private:
 	const char* title;
 	unsigned int width{ 640 };
 	unsigned int height{ 480 };
+protected:
+	GLFWwindow* window;
 
 public:
 	GLFWApplication() = default;

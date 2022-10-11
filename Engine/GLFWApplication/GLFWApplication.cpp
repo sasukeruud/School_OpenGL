@@ -4,8 +4,6 @@
 #include <GLFW/glfw3.h>
 #include "GLFWApplication.h"
 
-GLFWwindow* window;
-
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
