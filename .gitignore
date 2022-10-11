@@ -35,12 +35,11 @@
 **/build/
 **/.vs/
 **/x64/
+/engineTest
+.vscode
 
 #Visual studio files
 *.sln
 *.filters
 *.user
 *.vcxproj
-
-#Folders
-/engineTest
