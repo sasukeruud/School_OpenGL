@@ -5,11 +5,6 @@
 #include "GLFWApplication.h"
 
 GLFWwindow* window;
-unsigned int width{640};
-unsigned int height{480};
-
-//GLFWApplication::GLFWApplication(const std::string& name, const std::string& version);
-//GLFWApplication::~GLFWApplication();
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -17,9 +12,9 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 		glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
-//Argument parsing
-unsigned int GLFWApplication::GLFWApplication::ParseArguments(int argc, char **argv){
-	try{
+
+unsigned int GLFWApplication::ParseArguments(int argc, char **argv) {
+	try {
 		TCLAP::CmdLine cmd("Command descritption", ' ', "0.9");
 
 		//New command line agruments for executebl
@@ -47,14 +42,13 @@ unsigned int GLFWApplication::GLFWApplication::ParseArguments(int argc, char **a
 		}
 	}
 	catch (TCLAP::ArgException& e) {
-		std::cout << "Error: " <<  e.error() << " for arg: "<< e.argId() << std::endl;
+		std::cout << "Error: " << e.error() << " for arg: " << e.argId() << std::endl;
 	}
 
 	return EXIT_SUCCESS;
 }
 
-// Initialization 
-unsigned int GLFWApplication::GLFWApplication::Init() {
+unsigned int GLFWApplication::Init() {
 	try {
 		//Initialize library 
 		if (!glfwInit()) {
@@ -66,7 +60,7 @@ unsigned int GLFWApplication::GLFWApplication::Init() {
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
 
 		// Create a windowed mode and its OpenGL context
-		window = glfwCreateWindow(width, height, "Hello World", NULL, NULL);
+		window = glfwCreateWindow(width, height, "title", NULL, NULL);
 		if (!window) {
 			glfwTerminate();
 			return EXIT_FAILURE;
@@ -83,24 +77,20 @@ unsigned int GLFWApplication::GLFWApplication::Init() {
 		}
 		gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 	}
-	catch(std::exception& e) {
+	catch (std::exception& e) {
 		std::cout << "ERROR: " << e.what() << std::endl;
 	}
 
 	return EXIT_SUCCESS;
 }
 
-// Run function
-unsigned int GLFWApplication::GLFWApplication::Run() {
+unsigned int GLFWApplication::Run() {
 	try {
 		while (!glfwWindowShouldClose(window)) {
-			/* Render here */
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			/* Swap front and back buffers */
 			glfwSwapBuffers(window);
 
-			/* Poll for and process events */
 			glfwPollEvents();
 		}
 	}
@@ -113,7 +103,7 @@ unsigned int GLFWApplication::GLFWApplication::Run() {
 	return EXIT_SUCCESS;
 }
 
-unsigned int GLFWApplication::GLFWApplication::Destroy() {
+unsigned int GLFWApplication::Destroy() {
 	glfwDestroyWindow(window);	//Destroys window
 	glfwTerminate();
 
