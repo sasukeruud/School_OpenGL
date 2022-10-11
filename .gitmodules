@@ -1,6 +1,6 @@
 [submodule "External/tclap"]
 	path = External/tclap
-	url = https://git.code.sf.net/p/tclap/code
+	url = https://github.com/mirror/tclap.git
 [submodule "External/GLFW"]
 	path = External/GLFW
 	url = https://github.com/glfw/glfw.git
