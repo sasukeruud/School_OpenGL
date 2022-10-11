@@ -41,3 +41,6 @@
 *.filters
 *.user
 *.vcxproj
+
+#Folders
+/engineTest
