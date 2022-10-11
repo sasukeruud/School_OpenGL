@@ -12,10 +12,6 @@ add_subdirectory(External/glad)
 add_subdirectory(External/glm)
 
 #########################
-#add_subdirectory(Engine/GeometricTools)
-#add_subdirectory(Engine/GLFWApplication)
-#add_subdirectory(Engine/VertexBuffer)
-#add_subdirectory(Engine/IndexBuffer)
 add_subdirectory(Engine)
 
 add_subdirectory(engineTest)
