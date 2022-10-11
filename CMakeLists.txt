@@ -9,6 +9,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 add_subdirectory(External/tclap)
 add_subdirectory(External/GLFW)
 add_subdirectory(External/glad)
+add_subdirectory(External/glm)
 
 #########################
 #add_subdirectory(Engine/GeometricTools)
