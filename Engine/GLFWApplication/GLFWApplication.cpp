@@ -13,6 +13,11 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
+//Function to let the rendering window be change when the window is change in size
+static void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+	glViewport(0, 0, width, height);
+}
+
 //Function to generate arguments for the console of the application
 unsigned int GLFWApplication::ParseArguments(int argc, char **argv) {
 	try {
@@ -49,7 +54,7 @@ unsigned int GLFWApplication::ParseArguments(int argc, char **argv) {
 }
 
 //Function to initalize glfw and glad for use
-unsigned int GLFWApplication::Init() {
+unsigned int GLFWApplication::Init(const char* title) {
 	try {
 		//Initialize library 
 		if (!glfwInit())	return EXIT_FAILURE;
@@ -59,14 +64,17 @@ unsigned int GLFWApplication::Init() {
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
 
 		// Create a windowed mode and its OpenGL context
-		window = glfwCreateWindow(width, height, "title", NULL, NULL);
+		window = glfwCreateWindow(width, height, title, NULL, NULL);
 		if (!window) {
+			std::cout << "ERROR: Failed to create GLFW window" << std::endl;
 			glfwTerminate();
 			return EXIT_FAILURE;
 		}
 
 		//Addes key_callback for shortcut when window is open
 		glfwSetKeyCallback(window, key_callback);
+		//Adds resize to window
+		glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 		glfwMakeContextCurrent(window);
 
 		//Glad loader
@@ -77,6 +85,10 @@ unsigned int GLFWApplication::Init() {
 			return EXIT_FAILURE;
 		}
 		gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+
+		//Rendering window for OpenGL
+		glViewport(0, 0, width, height);
+
 	}
 	catch (std::exception& e) {
 		std::cout << "ERROR: " << e.what() << std::endl;

@@ -8,6 +8,7 @@ private:
 	const char* title;
 	unsigned int width{ 640 };
 	unsigned int height{ 480 };
+	
 protected:
 	GLFWwindow* window;
 
@@ -23,7 +24,7 @@ public:
 	//Argument parsing
 	virtual unsigned int ParseArguments(int argc, char** argv); // Virtual function with default behavior.
 	// Initialization
-	virtual unsigned Init(); // Virtual function with defaut behavior
+	virtual unsigned Init(const char* title); // Virtual function with defaut behavior
 	// Run function
 	virtual unsigned Run();
 	//Destroy function
