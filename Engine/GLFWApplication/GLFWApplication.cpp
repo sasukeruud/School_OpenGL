@@ -18,7 +18,10 @@ static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, width, height);
 }
 
-//Function to generate arguments for the console of the application
+void GLFWApplication::processInput(GLFWwindow* window) {
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) glfwSetWindowShouldClose(window, true);
+}
+
 unsigned int GLFWApplication::ParseArguments(int argc, char **argv) {
 	try {
 		TCLAP::CmdLine cmd("Command descritption", ' ', "0.9");
@@ -53,7 +56,6 @@ unsigned int GLFWApplication::ParseArguments(int argc, char **argv) {
 	return EXIT_SUCCESS;
 }
 
-//Function to initalize glfw and glad for use
 unsigned int GLFWApplication::Init(const char* title) {
 	try {
 		//Initialize library 
@@ -71,8 +73,12 @@ unsigned int GLFWApplication::Init(const char* title) {
 			return EXIT_FAILURE;
 		}
 
+
+		//Depricated
 		//Addes key_callback for shortcut when window is open
-		glfwSetKeyCallback(window, key_callback);
+		//glfwSetKeyCallback(window, key_callback);
+
+
 		//Adds resize to window
 		glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 		glfwMakeContextCurrent(window);
@@ -97,11 +103,12 @@ unsigned int GLFWApplication::Init(const char* title) {
 	return EXIT_SUCCESS;
 }
 
-//Default run funciton, will run a black screen with nothing
 unsigned int GLFWApplication::Run() {
 	try {
 		while (!glfwWindowShouldClose(window)) {
 			glClear(GL_COLOR_BUFFER_BIT);
+
+			processInput(window);
 
 			glfwSwapBuffers(window);
 
@@ -111,13 +118,11 @@ unsigned int GLFWApplication::Run() {
 	catch (std::exception& e) {
 		std::cout << "ERROR: " << e.what() << std::endl;
 	}
-	glfwDestroyWindow(window);	//Destroys window
-	glfwTerminate();
+	Destroy();
 
 	return EXIT_SUCCESS;
 }
 
-//Funtion to terminate glfw memory locations
 unsigned int GLFWApplication::Destroy() {
 	glfwDestroyWindow(window);	//Destroys window
 	glfwTerminate();

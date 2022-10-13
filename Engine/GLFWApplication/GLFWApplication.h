@@ -8,9 +8,11 @@ private:
 	const char* title;
 	unsigned int width{ 640 };
 	unsigned int height{ 480 };
-	
+
 protected:
 	GLFWwindow* window;
+
+	void processInput(GLFWwindow* window);
 
 public:
 	GLFWApplication() = default;
@@ -19,15 +21,15 @@ public:
 	//};
 	//~GLFWApplication();
 
-	
+	//Function to generate arguments for the console of the application
+	virtual unsigned int ParseArguments(int argc, char** argv);
 
-	//Argument parsing
-	virtual unsigned int ParseArguments(int argc, char** argv); // Virtual function with default behavior.
-	// Initialization
-	virtual unsigned Init(const char* title); // Virtual function with defaut behavior
-	// Run function
+	//Function to initalize glfw and glad for use
+	virtual unsigned Init(const char* title);
+	
+	//Default run funciton, will run a black screen with nothing
 	virtual unsigned Run();
-	//Destroy function
+
+	//Funtion to terminate glfw memory locations
 	virtual unsigned int Destroy();
-	//....
 };
