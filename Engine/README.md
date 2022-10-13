@@ -38,7 +38,7 @@ For creating VBO(vertex buffer object) and binding it to a VAO(vertex array obje
 ## Functions
 List over the funstions the class implements.
 
-### VertexBuffer
+### VertexBuffer (constructor)
 Constructor for the class. There is three ways to create. The two under and a default that is not configurated yet. 
 
 ```
@@ -70,5 +70,30 @@ For unbinding the currently bound buffer.
 ### BufferSubData
 Not implemented yet
 
-# Shaders
+# VertexArray
 Not implemented yet
+
+# Shaders
+This class is for compile and bind shaders.
+
+## Functions 
+List over funstions:
+
+### Shader (constructor)
+TODO: fill out 
+
+### CompileShader
+Function for binding a shader data to a shader object.
+```
+TODO: add variables
+```
+
+### Bind
+Function to attach vertex and fragment shader to the shader program.<br>
+Also checks for error when linking the shaderPorgram 
+
+### UseShader
+Enables the ShaderProgram to run the written shaders in the program.
+
+### Destory
+Deletes the currently made shaders(vertex- and fragmentshader).
