@@ -1,7 +1,13 @@
 #pragma once
 
+//Standard libraries
 #include <iostream>
+#include <vector>
+//External libraries
 #include <glad/glad.h>
+//Engine libraries
+#include "ShadersDataTypes.h"
+#include "GeometricTools.h"
 
 class VertexBuffer
 {
@@ -15,8 +21,11 @@ public:
 	VertexBuffer(const void* vertices, GLsizei size);
 	~VertexBuffer();
 	
-	// Bind the vertex buffer, can take float and int verticies
-	template<class T> void Bind(T verticies) const;
+	// Sets data for the vbo
+	void SetData(const void* verticies);
+
+	//Binds vbo to vao
+	void Bind(GLuint index, GLint valuePoint) const;
 
 	// Unbind what is bound to the buffer, if no vbo is bound it will be set to 0
 	void Unbind() const;
