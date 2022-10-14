@@ -71,7 +71,22 @@ For unbinding the currently bound buffer.
 Not implemented yet
 
 # VertexArray
-Not implemented yet
+Class to generate VAO(vertex array object)
+
+## Functions
+List of functions:
+
+### VertexArray
+Constructor and deconstructor for the class
+
+### Bind
+Bind the VAO.
+
+### Unbind
+Unbind the VAO.
+
+### AddVertexBuffer
+Not implemented
 
 # Shaders
 This class is for compile and bind shaders.
