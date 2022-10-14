@@ -1,9 +1,4 @@
-#include <iostream>
-
-#include <glad/glad.h>
-
 #include "VertexArray.h"
-#include "VertexBuffer.h"
 
 VertexArray::VertexArray() {
 	glGenVertexArrays(1, &VAO);
@@ -42,5 +37,3 @@ template<class T> void VertexArray::AddVertexBuffer(const VertexBuffer& vertexBu
 
 	glEnableVertexAttribArray(0);
 }
-
-//void VertexArray::SetIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer) {}
