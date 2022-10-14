@@ -7,6 +7,7 @@
 #include <glad/glad.h>
 //Project libraries
 #include "VertexBuffer.h"
+#include "IndexBuffer.h"
 
 class VertexArray {
 private:
@@ -36,10 +37,15 @@ public:
 	// Add vertex buffer. This method utilizes the BufferLayout internal to 
 	// the vertex buffer to set up the vertex attributes. Notice that 
 	// this function opens for the definition of several vertex buffers.
+
 	/*
-	Not working
+	Binds vbo to vao
+	index	: index number of vertex attribute
+	size	: How many components per vertex
 	*/
-	template<class T> void AddVertexBuffer(const VertexBuffer& vertexBuffer, T verticies);
+	void AddVertexBuffer(GLuint index, GLint size, const VertexBuffer& vertexBuffer);
+
+	void AddVertexBuffer(GLuint index, GLint size, const IndexBuffer& indexBuffer);
 	// Set index buffer
 	//void SetIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer);
 

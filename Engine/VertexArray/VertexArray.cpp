@@ -17,23 +17,24 @@ void VertexArray::Unbind() const {
 	glBindVertexArray(0);
 }
 
-template<class T> void VertexArray::AddVertexBuffer(const VertexBuffer& vertexBuffer, T verticies) {
-	auto vbo = VertexBuffer::VertexBuffer(verticies, 1);
-	vbo.Bind(verticies);
+void VertexArray::AddVertexBuffer(GLuint index, GLint size, const VertexBuffer& vertexBuffer) {
+	glVertexAttribPointer(	index,
+							size,
+							GL_FLOAT,
+							GL_FALSE,
+							3 * sizeof(float),
+							NULL);
 
-	glVertexAttribPointer(0,
-		3,
+	glEnableVertexAttribArray(0);
+}
+
+void VertexArray::AddVertexBuffer(GLuint index, GLint size, const IndexBuffer& indexBuffer) {
+	glVertexAttribPointer(index,
+		size,
 		GL_FLOAT,
 		GL_FALSE,
 		3 * sizeof(float),
-		(void*)0);
-	/*
-	glVertexAttribPointer(	vertexBuffer.GetAttributes().data()->Offset, 
-							vertexBuffer.GetAttributes().data()->Size,
-							ShaderDataTypeToOpenGLBaseType(vertexBuffer.GetAttributes().data()->Type),
-							vertexBuffer.GetAttributes().data()->Normalized,
-							vertexBuffer.GetStride(), 
-							NULL);*/
+		NULL);
 
 	glEnableVertexAttribArray(0);
 }
