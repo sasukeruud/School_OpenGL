@@ -57,6 +57,19 @@ void Shader::UploadUniformFloat2(const std::string& name, const glm::vec2& vecto
 
 }
 
+GLint Shader::UniformLocation(const GLchar* uniformName) {
+	auto success = glGetUniformLocation(ShaderProgram, uniformName);
+	if (success == -1) {
+		std::cout << "ERROR: could not find location of uniform." << std::endl;
+		return success;
+	}
+	else return success;
+}
+
+void Shader::SetUniform(GLint location, float v1, float v2, float v3, float v4) {
+	glUniform4f(location, v1, v2, v3, v4);
+}
+
 void Shader::Destory() const {
 	glDeleteShader(VertexShader);
 	glDeleteShader(FragmentShader);

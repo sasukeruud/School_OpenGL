@@ -47,21 +47,36 @@ public:
 	/*
 	Function to link shader data to shader program
 	*/
-	void Bind() const;
+	virtual void Bind() const;
 
 	/*
 	Not implemented
 	*/
-	void Unbind() const;
+	virtual void Unbind() const;
 
 	/*
 	Sets the shader program to be used
 	*/
-	void UseShader() const;
+	virtual void UseShader() const;
 
 	/*
 	Not implemented
 	*/
-	void UploadUniformFloat2(const std::string& name, const glm::vec2& vector);
+	virtual void UploadUniformFloat2(const std::string& name, const glm::vec2& vector);
 
+	/*
+	Function to get the location of a uniform from a shader
+	uniformName: Global name of the uniform that is made in a shader
+	*/
+	virtual GLint UniformLocation(const GLchar* uniformName);
+
+	/*
+	Function to set data of an uniform
+	location: Location of where to uniform is
+	v1		: First value of the uniform
+	v2		: Second value of the uniform
+	v3		: Third value of the uniform
+	v4		: Fourth value of the uniform
+	*/
+	virtual void SetUniform(GLint location, float v1, float v2, float v3, float v4);
 };
