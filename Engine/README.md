@@ -80,12 +80,19 @@ This class is for compile and bind shaders.
 List over funstions:
 
 ### Shader (constructor)
-TODO: fill out 
+Takes shader data src for parameters<br>
+Generates vertexShader, fragmentShader and shaderProgram.
+```
+vertexSrc	: Source code for vertex shader
+fragmentSrc	: Source code for fragment shader
+```
 
 ### CompileShader
 Function for binding a shader data to a shader object.
+
 ```
-TODO: add variables
+shader		: The shader that data will be bind to
+shaderSrc	: Source code for shader data
 ```
 
 ### Bind
