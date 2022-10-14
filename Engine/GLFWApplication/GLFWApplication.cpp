@@ -129,3 +129,14 @@ unsigned int GLFWApplication::Destroy() {
 
 	return EXIT_SUCCESS;
 }
+
+unsigned int GLFWApplication::WireframeMode() {
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	return EXIT_SUCCESS;
+}
+
+unsigned int GLFWApplication::FillMode() {
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	
+	return EXIT_SUCCESS;
+}
