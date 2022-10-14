@@ -1,6 +1,3 @@
-#include <iostream>
-#include <glad/glad.h>
-
 #include "Shader.h"
 
 Shader::Shader(const std::string& vertexSrc, const std::string& fragmentSrc) {
@@ -12,15 +9,14 @@ Shader::Shader(const std::string& vertexSrc, const std::string& fragmentSrc) {
 	CompileShader(FragmentShader, fragmentSrc);
 }
 
-//Shader::~Shader() {}
+Shader::~Shader() {}
 
-//Remove GLenum
 void Shader::CompileShader(GLuint shader, const std::string& shaderSrc) {
-	const GLchar* vss = shaderSrc.c_str();
+	const GLchar* ss = shaderSrc.c_str();
 	int success;
 	char infoLog[512];
 
-	glShaderSource(shader, 1, &vss, NULL);
+	glShaderSource(shader, 1, &ss, NULL);
 	glCompileShader(shader);
 
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
