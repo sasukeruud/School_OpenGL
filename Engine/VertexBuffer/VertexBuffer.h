@@ -30,6 +30,7 @@ public:
 	/*
 	Constructor. It initializes with a data buffer and the size of it.
 	Generets the VBO
+	TODO: add binding option
 	verticies	: Data that will be copied onto the buffer
 	size		: How many buffers to be created
 	*/
@@ -41,21 +42,21 @@ public:
 	/*
 	Sets data for the vbo
 	verticies	: Data that will be copied onto the buffer
-	target		: Spesify what type of buffer object to use. Normaly GL_ARRAY_BUFFER or GL_ELEMENT_ARRAY_BUFFER
 	*/
-	void SetData(const void* verticies, GLenum target);
+	void SetData(const void* verticies, GLsizeiptr size);
 
 	/*
-	Binds vbo to vao
-	index	: index number of vertex attribute
-	size	: How many components per vertex
+	Binds vbo
 	*/
-	void Bind(GLuint index, GLint size) const;
+	void Bind() const;
 
-	// Unbind what is bound to the buffer, if no vbo is bound it will be set to 0
+	/*
+	Unbind what is bound to the buffer, if no vbo is bound it will be set to 0
+	*/
 	void Unbind() const;
 
 	// Fill out a specific segment of the buffer given by an offset and a size.
+	//TODO: finish, for changing subdata
 	void BufferSubData(GLintptr offset, GLsizeiptr size, const void* data) const;
 
 };
