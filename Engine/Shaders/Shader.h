@@ -1,7 +1,12 @@
 #pragma once
 
+#ifndef  SHADER_H
+#define SHADER_H
+
 //Stanard libraries
 #include <iostream>
+#include <fstream>
+#include <sstream>
 //External libraries
 #include <glad/glad.h>
 #include <glm/glm.hpp>
@@ -38,6 +43,14 @@ public:
 	fragmentSrc	: Source code for fragment shader
 	*/
 	Shader(const std::string& vertexSrc, const std::string& fragmentSrc);
+
+	/*
+	Constructor for Shader class.
+	Settes variables and compile fragment shader and vertex shader
+	vertexPath		: Source code for vertex shader from file
+	fragmentPath	: Source code for fragment shader from file
+	*/
+	Shader(const char* vertexPath, const char* fragmentPath);
 
 	/*
 	Deconstructor
@@ -78,5 +91,7 @@ public:
 	v3		: Third value of the uniform
 	v4		: Fourth value of the uniform
 	*/
-	virtual void SetUniform(GLint location, float v1, float v2, float v3, float v4);
+	virtual void SetUniform4f(GLint location, float v1, float v2, float v3, float v4);
 };
+
+#endif // ! SHADER_H

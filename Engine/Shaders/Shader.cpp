@@ -9,6 +9,40 @@ Shader::Shader(const std::string& vertexSrc, const std::string& fragmentSrc) {
 	CompileShader(FragmentShader, fragmentSrc);
 }
 
+Shader::Shader(const char* vertexPath, const char* fragmentPath) {
+	VertexShader = glCreateShader(GL_VERTEX_SHADER);
+	FragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	ShaderProgram = glCreateProgram();
+
+	std::string vertexCode, fragmentCode;
+	std::ifstream vertexFile, fragmentFile;
+
+	vertexFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+	fragmentFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
+	try {
+		//Open file
+		vertexFile.open(vertexPath);
+		fragmentFile.open(fragmentPath);
+		std::stringstream vertexStream, fragmentStream;
+		//Read file's buffer contents into streams
+		vertexStream << vertexFile.rdbuf();
+		fragmentStream << fragmentFile.rdbuf();
+		//Close file handlers
+		vertexFile.close();
+		fragmentFile.close();
+		//convert stream into string
+		vertexCode = vertexStream.str();
+		fragmentCode = fragmentStream.str();
+	}
+	catch (std::ifstream::failure e) {
+		std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+	}
+
+	CompileShader(VertexShader, vertexCode);
+	CompileShader(FragmentShader, fragmentCode);
+}
+
 Shader::~Shader() {}
 
 void Shader::CompileShader(GLuint shader, const std::string& shaderSrc) {
@@ -66,7 +100,7 @@ GLint Shader::UniformLocation(const GLchar* uniformName) {
 	else return success;
 }
 
-void Shader::SetUniform(GLint location, float v1, float v2, float v3, float v4) {
+void Shader::SetUniform4f(GLint location, float v1, float v2, float v3, float v4) {
 	glUniform4f(location, v1, v2, v3, v4);
 }
 
