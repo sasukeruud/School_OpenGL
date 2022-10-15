@@ -18,14 +18,14 @@ void VertexArray::Unbind() const {
 }
 
 void VertexArray::AddVertexBuffer(GLuint index, GLint size, const VertexBuffer& vertexBuffer) {
-	glVertexAttribPointer(	index,
-							size,
-							GL_FLOAT,
-							GL_FALSE,
-							3 * sizeof(float),
-							NULL);
+	glVertexAttribPointer(index,
+		size,
+		GL_FLOAT,
+		GL_FALSE,
+		3 * sizeof(float),
+		NULL);
 
-	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(index);
 }
 
 void VertexArray::AddVertexBuffer(GLuint index, GLint size, const IndexBuffer& indexBuffer) {
@@ -36,5 +36,5 @@ void VertexArray::AddVertexBuffer(GLuint index, GLint size, const IndexBuffer& i
 		3 * sizeof(float),
 		NULL);
 
-	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(index);
 }
