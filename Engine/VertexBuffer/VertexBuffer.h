@@ -44,15 +44,13 @@ public:
 	verticies	: Data that will be copied onto the buffer
 	size		: Size of the copied data
 	*/
-	template<class T> void SetData(T verticies, GLsizeiptr size) {
+	template<class T> void SetData(T* verticies, int size) {
 		int32_t bufferData = 0;
-
-		const void* data = verticies;
 
 		glGenBuffers(1, &VertexBufferID);
 		glBindBuffer(GL_ARRAY_BUFFER, VertexBufferID);
 
-		glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, size, verticies, GL_STATIC_DRAW);
 		glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &bufferData);
 
 		if (bufferData == 0) std::cout << "ERROR:: NO DATA IN BUFFER" << std::endl;
