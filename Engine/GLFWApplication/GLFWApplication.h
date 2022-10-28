@@ -12,10 +12,10 @@ private:
 protected:
 	GLFWwindow* window;
 
-	void processInput(GLFWwindow* window);
-
 public:
 	GLFWApplication() = default;
+
+	virtual void processInput(GLFWwindow* window);
 	//GLFWApplication(const char& name, const std::string& version) {
 	//	char title = name;
 	//};

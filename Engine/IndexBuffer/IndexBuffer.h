@@ -16,6 +16,7 @@ public:
 	// Note that the buffer will be bound on construction and that the.size is
 	// given in number of elements, not bytes
 	IndexBuffer(GLuint* indices, GLsizei count);
+	IndexBuffer() = default;
 	~IndexBuffer();
 
 	/*
