@@ -16,7 +16,7 @@ unsigned int chessBoard::Run() {
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec3> verticies_color;
 	std::vector<glm::uvec3> indices;
-	GeometricTools::GenGrid<std::vector<glm::vec3>, std::vector<glm::uvec3>>(2, vertices, indices);
+	GeometricTools::GenGrid<std::vector<glm::vec3>, std::vector<glm::uvec3>>(5, vertices, indices);
 	//GeometricTools::GenColorGrid<std::vector<glm::vec3>, std::vector<glm::uvec3>>(2, verticies_color, indices);
 
 	auto vao = VertexArray();
@@ -39,18 +39,10 @@ unsigned int chessBoard::Run() {
 
 	for (int i = 0; i < vertices.size(); i++)
 	{
-		
+		if (i == 0 || i == 1 || i == 10)change = 0;
+		else change = 1;
 		verticies_color.push_back(colors[change]);
-		if (i%2 != 0) {
-			if(change == 0)change = 1;
-			else change = 0;
-		}
-		
-		
 	}
-
-	
-
 
 	for (size_t i = 0; i < indices.size(); i++)
 	{
@@ -77,8 +69,6 @@ unsigned int chessBoard::Run() {
 	ibo.SetData(glm::value_ptr(indices[0]), (int)indices.size() * sizeof(glm::uvec3));
 	ibo.Bind();
 
-
-
 	const std::string& vertexShaderSrc = R"(
 	#version 460
 
@@ -90,7 +80,7 @@ unsigned int chessBoard::Run() {
 
 	void main()
 	{
-		gl_Position = vec4(pos.x,pos.y,pos.z,1.0);
+		gl_Position = vec4(pos,1.0);
 		ourColor = vec3(color.x,color.y,color.z);
 	}
 )";

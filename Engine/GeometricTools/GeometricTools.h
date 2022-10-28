@@ -58,9 +58,9 @@ namespace GeometricTools{
             }
             
         }*/
-        for (float j = -(N/2); j <= (float)N/2; j++)
+        for (float j = 0; j <= N; j++)
         {
-            for (float i = -(N/2); i <= N/2; i++)
+            for (float i = 0; i <= N; i++)
             {
                 float x = (float)i/(float)N;
                 float y = (float)j/(float)N;
