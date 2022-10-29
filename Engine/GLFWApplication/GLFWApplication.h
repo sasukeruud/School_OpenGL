@@ -6,8 +6,8 @@ class GLFWApplication
 {
 private:
 	const char* title;
-	unsigned int width{ 640 };
-	unsigned int height{ 480 };
+	unsigned int width{ 800 };
+	unsigned int height{ 800 };
 
 protected:
 	GLFWwindow* window;
