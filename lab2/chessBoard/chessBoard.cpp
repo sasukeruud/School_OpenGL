@@ -13,75 +13,114 @@ void chessBoard::processInput(GLFWwindow* window) {
 }
 
 unsigned int chessBoard::Run() {
+	int boardSize = 8;
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec3> verticies_color;
 	std::vector<glm::uvec3> indices;
-	GeometricTools::GenGrid<std::vector<glm::vec3>, std::vector<glm::uvec3>>(8, vertices, indices);
+	std::vector<glm::uvec3> whiteIndicies;
+	GeometricTools::GenGrid<std::vector<glm::vec3>, std::vector<glm::uvec3>>(boardSize, vertices, indices);
 	//GeometricTools::GenColorGrid<std::vector<glm::vec3>, std::vector<glm::uvec3>>(2, verticies_color, indices);
+	std::vector<glm::vec3> white;
+	std::vector<glm::vec3> black;
+	bool whiteStat = true;
+	for (int i = 0; i < indices.size() - 1; i++)
+	{
+		if (whiteStat) {
+			white.push_back(glm::vec3(vertices[indices[i].x].x, vertices[indices[i].x].y, vertices[indices[i].x].z));
+			white.push_back(glm::vec3(vertices[indices[i].y].x, vertices[indices[i].y].y, vertices[indices[i].y].z));
+			white.push_back(glm::vec3(vertices[indices[i].z].x, vertices[indices[i].z].y, vertices[indices[i].z].z));
+			
 
-	auto vao = VertexArray();
+			white.push_back(glm::vec3(vertices[indices[i + 1].x].x, vertices[indices[i + 1].x].y, vertices[indices[i + 1].x].z));
+			white.push_back(glm::vec3(vertices[indices[i + 1].y].x, vertices[indices[i + 1].y].y, vertices[indices[i + 1].y].z));
+			white.push_back(glm::vec3(vertices[indices[i + 1].z].x, vertices[indices[i + 1].z].y, vertices[indices[i + 1].z].z));
+			
+			whiteStat = false;
+			i++;
+		}
+		else {
+			black.push_back(glm::vec3(vertices[indices[i].x].x, vertices[indices[i].x].y, vertices[indices[i].x].z));
+			black.push_back(glm::vec3(vertices[indices[i].y].x, vertices[indices[i].y].y, vertices[indices[i].y].z));
+			black.push_back(glm::vec3(vertices[indices[i].z].x, vertices[indices[i].z].y, vertices[indices[i].z].z));
 
-	vao.Bind();
+			black.push_back(glm::vec3(vertices[indices[i + 1].x].x, vertices[indices[i + 1].x].y, vertices[indices[i + 1].x].z));
+			black.push_back(glm::vec3(vertices[indices[i + 1].y].x, vertices[indices[i + 1].y].y, vertices[indices[i + 1].y].z));
+			black.push_back(glm::vec3(vertices[indices[i + 1].z].x, vertices[indices[i + 1].z].y, vertices[indices[i + 1].z].z));
+			
+			whiteStat = true;
+			i++;
+		}
+		if (vertices[indices[i].x].x == 1 - (float)1/boardSize) whiteStat = !whiteStat;
+	}
+	
+	auto vao_white = VertexArray();
+	auto vao_black = VertexArray();
+	auto vao2 = VertexArray();
+
+	vao_white.Bind();
 	auto vbo = VertexBuffer();
 	auto vbo_color = VertexBuffer();
 
-	vbo.SetData(glm::value_ptr(vertices[0]), (int)vertices.size() * sizeof(glm::vec3));
+	vbo.SetData(glm::value_ptr(white[0]), (int)white.size() * sizeof(glm::vec3));
 	vbo.Bind();
-	vao.AddVertexBuffer(0, 3, vbo);
+	vao_white.AddVertexBuffer(0, 3, vbo);
 	vbo.Unbind();
 	
-	glm::vec3 white = glm::vec3(1.0f, 1.0f, 1.0f);
-	glm::vec3 black = glm::vec3(0.0f, 0.0f, 0.0f);
-	std::vector<glm::vec3> colors;
-	colors.push_back(white);
-	colors.push_back(black);
-	int change = 0;
-
-	int x = 0;
-	int y = 0;
-
-	for (int i = 0; i < vertices.size(); i++)
+	for (int i = 0; i < white.size(); i++)
 	{
-		if (y != vertices[i].y) {
-			y = vertices[i].y;
-			if (change == 0) change = 1;
-			else change = 0;
-		}
-		else if (x != vertices[i].x) {
-			x = vertices[i].x;
-			if (change == 0) change = 1;
-			else change = 0;
-		}
-		verticies_color.push_back(colors[change]);
-	}
-
-	for (size_t i = 0; i < indices.size(); i++)
-	{
-		std::cout << indices[i].x << " " << indices[i].y << " " << indices[i].z << std::endl;
-	}
-	std::cout << "============" << std::endl;
-
-	for (size_t i = 0; i < vertices.size(); i++)
-	{
-		std::cout << vertices[i].x << " " << vertices[i].y << " " << vertices[i].z << std::endl;
-	}
-
-	std::cout << "============" << std::endl;
-	for (size_t i = 0; i < verticies_color.size(); i++)
-	{
-		std::cout << verticies_color[i].x << " " << verticies_color[i].y << " " << verticies_color[i].z << std::endl;
+		verticies_color.push_back(glm::vec3(ColorTools::FullColor[0], ColorTools::FullColor[0], ColorTools::FullColor[0]));
 	}
 
 	vbo_color.SetData(glm::value_ptr(verticies_color[0]), (int)verticies_color.size() * sizeof(glm::vec3));
 	vbo_color.Bind();
-	vao.AddVertexBuffer(1, 3, vbo_color);
+	vao_white.AddVertexBuffer(1, 3, vbo_color);
 
-	auto ibo = IndexBuffer();
-	ibo.SetData(glm::value_ptr(indices[0]), (int)indices.size() * sizeof(glm::uvec3));
-	ibo.Bind();
+	vao_black.Bind();
+	vbo.SetData(glm::value_ptr(black[0]), (int)black.size() * sizeof(glm::vec3));
+	vbo.Bind();
+	vao_black.AddVertexBuffer(0, 3, vbo);
+	vbo.Unbind();
+
+	verticies_color.clear();
+	
+	for (int i = 0; i < white.size(); i++)
+	{
+		verticies_color.push_back(glm::vec3(ColorTools::NoneColor[0], ColorTools::NoneColor[0], ColorTools::NoneColor[0]));
+	}
+
+	vbo_color.SetData(glm::value_ptr(verticies_color[0]), (int)verticies_color.size() * sizeof(glm::vec3));
+	vbo_color.Bind();
+	vao_black.AddVertexBuffer(1, 3, vbo_color);
+	
+
+	vao2.Bind();
+	auto vbo_square = VertexBuffer();
+
+	/*
+	* takes the indecies value for 0 to be able to get the vertex value for that position
+	*/
+	float squareCurosr[6*3] = { vertices[indices[0].x].x,vertices[indices[0].x].y,vertices[indices[0].x].z,
+							vertices[indices[0].y].x, vertices[indices[0].y].y,vertices[indices[0].y].z,
+							vertices[indices[0].z].x, vertices[indices[0].z].y,vertices[indices[0].z].z,
+
+							vertices[indices[1].x].x,vertices[indices[1].x].y,vertices[indices[1].x].z,
+							vertices[indices[1].y].x, vertices[indices[1].y].y,vertices[indices[1].y].z ,
+							vertices[indices[1].z].x, vertices[indices[1].z].y,vertices[indices[1].z].z
+							 };
+
+	vbo_square.Bind();
+	vbo_square.SetData(squareCurosr, sizeof(squareCurosr));
+	vbo_square.Bind();
+	vao2.AddVertexBuffer(0, 3, vbo_square);
+
+	auto vbo_square_color = VertexBuffer();
+	vbo_square_color.Bind();
+	vbo_square_color.SetData(GeometricTools::ColorSquare2D, sizeof(GeometricTools::ColorSquare2D));
+	vbo_square_color.Bind();
+	vao2.AddVertexBuffer(1,3,vbo_square_color);
 
 	const std::string& vertexShaderSrc = R"(
-	#version 460
+	#version 420
 
 	#define center vec4(-0.5,-0.5,0,0)
 	
@@ -99,7 +138,7 @@ unsigned int chessBoard::Run() {
 )";
 
 	const std::string& fragmentShaderSrc = R"(
-	#version 460 core
+	#version 420 core
 
 	#define M_PI 3.14159265
 
@@ -125,9 +164,17 @@ unsigned int chessBoard::Run() {
 		glClearColor(ColorTools::FullColor[0] * 0.5f, ColorTools::FullColor[0] * 0.0f, ColorTools::FullColor[0] * 0.0f, ColorTools::Alpha[0]);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		vao.Bind();
-		//glDrawElements(GL_LINES, (GLsizei)indices.size() * 4, GL_UNSIGNED_INT, NULL);
-		glDrawElements(GL_TRIANGLES, (GLsizei)indices.size() * 3, GL_UNSIGNED_INT, NULL);
+		vao_white.Bind();
+		glDrawArrays(GL_TRIANGLES, 0, 6 * white.size());
+		vao_white.Unbind();
+
+		vao_black.Bind();
+		glDrawArrays(GL_TRIANGLES, 0, 6 * black.size());
+		vao_black.Unbind();
+
+		vao2.Bind();
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		vao2.Unbind();
 
 		glfwPollEvents();
 		glfwSwapBuffers(window);
