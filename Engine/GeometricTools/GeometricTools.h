@@ -22,10 +22,12 @@ namespace GeometricTools{
                                                 0.0f, 1.0f, 0.0f, 
                                                 0.0f, 0.0f, 1.0f};
     //Color array for a square [3*4]
-    constexpr float ColorSquare2D[3*4] = {  0.0f, 0.0f, 0.0f, 
-                                            0.0f, 0.0f, 0.0f, 
-                                            0.0f, 0.0f, 0.0f, 
-                                            0.0f, 0.0f, 0.0f};
+    constexpr float ColorSquare2D[3*6] = {  .0f, 1.0f, 0.0f, 
+                                            0.0f, 1.0f, 0.0f, 
+                                            0.0f, 1.0f, .0f, 
+                                            0.0f, 1.0f, 0.0f,
+                                            0.0f, 1.0f, 0.0f,
+                                            0.0f, 1.0f, 0.0f};
 
     //https://stackoverflow.com/questions/58494179/how-to-create-a-grid-in-opengl-and-drawing-it-with-lines
     template<class T, class U> void GenGrid(int N, T &verticies, U &indicies){
