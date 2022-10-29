@@ -30,9 +30,41 @@ namespace GeometricTools{
     //https://stackoverflow.com/questions/58494179/how-to-create-a-grid-in-opengl-and-drawing-it-with-lines
     template<class T, class U> void GenGrid(int N, T &verticies, U &indicies){
         int half_N = N/2;
-        /*for (int j = -N/2; j <= N/2; j++)
+        /*
+        for (int j = 0; j <= N; j++)
         {
-            for (int i = -N/2; i <= N/2; i++)
+            for (int i = 0; i <= N; i++)
+            {
+                float x = (float)i/(float)N;
+                float y = (float)j/(float)N;
+                //float z = sin(x*2.0f*3.141526f) * sin(y*2.0f*3.141526f) * 0.1f;
+                float z = 0;
+                verticies.push_back(glm::vec3(x,y,z));
+            }
+            
+        }
+
+        for (int j = 0; j < N; j++)
+        {
+            for (int i = 0; i < N; i++)
+            {
+                int row1 = j * (N+1);
+                int row2 = (j+1) * (N+1);
+
+                indicies.push_back(glm::uvec4(row1 + i, row2 + i, row2 + i + 1, row1 + i +1));
+                //indicies.push_back(glm::uvec4(row1 + i, row2 + i, row1 + i + 1, row2 + i +1));
+
+                //Triangle 1
+                //indicies.push_back(glm::uvec4(row1+i, row1+i+1, row1+i+1, row2+i+1));
+
+                //Triangle 2
+                //indicies.push_back(glm::uvec4(row2+i+1, row2+i, row2+i, row1+i));
+            }
+            
+        }*/
+        for (float j = 0; j <= N; j++)
+        {
+            for (float i = 0; i <= N; i++)
             {
                 float x = (float)i/(float)N;
                 float y = (float)j/(float)N;
@@ -51,13 +83,16 @@ namespace GeometricTools{
                 int row2 = (j+1) * (N+1);
 
                 //Triangle 1
-                indicies.push_back(glm::uvec4(row1+i, row1+i+1, row1+i+1, row2+i+1));
+                indicies.push_back(glm::uvec3(row1 + i,row1 + i + 1,row2 + i + 1));
 
                 //Triangle 2
-                indicies.push_back(glm::uvec4(row2+i+1, row2+i, row2+i, row1+i));
+                indicies.push_back(glm::uvec3(row1 + i, row2 + i + 1, row2 + i));
             }
             
-        }*/
+        }
+    }
+
+    template<class T, class U> void GenGridT(int N, T &verticies, U &indicies){
         for (float j = 0; j <= N; j++)
         {
             for (float i = 0; i <= N; i++)

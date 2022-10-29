@@ -16,7 +16,7 @@ unsigned int chessBoard::Run() {
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec3> verticies_color;
 	std::vector<glm::uvec3> indices;
-	GeometricTools::GenGrid<std::vector<glm::vec3>, std::vector<glm::uvec3>>(5, vertices, indices);
+	GeometricTools::GenGrid<std::vector<glm::vec3>, std::vector<glm::uvec3>>(8, vertices, indices);
 	//GeometricTools::GenColorGrid<std::vector<glm::vec3>, std::vector<glm::uvec3>>(2, verticies_color, indices);
 
 	auto vao = VertexArray();
@@ -37,10 +37,21 @@ unsigned int chessBoard::Run() {
 	colors.push_back(black);
 	int change = 0;
 
+	int x = 0;
+	int y = 0;
+
 	for (int i = 0; i < vertices.size(); i++)
 	{
-		if (i == 0 || i == 1 || i == 10)change = 0;
-		else change = 1;
+		if (y != vertices[i].y) {
+			y = vertices[i].y;
+			if (change == 0) change = 1;
+			else change = 0;
+		}
+		else if (x != vertices[i].x) {
+			x = vertices[i].x;
+			if (change == 0) change = 1;
+			else change = 0;
+		}
 		verticies_color.push_back(colors[change]);
 	}
 
@@ -72,6 +83,8 @@ unsigned int chessBoard::Run() {
 	const std::string& vertexShaderSrc = R"(
 	#version 460
 
+	#define center vec4(-0.5,-0.5,0,0)
+	
 	layout (location = 0) in vec3 pos;
 	layout (location = 1) in vec3 color;
 
@@ -80,13 +93,16 @@ unsigned int chessBoard::Run() {
 
 	void main()
 	{
-		gl_Position = vec4(pos,1.0);
+		gl_Position = vec4(pos,1.0) + center;
 		ourColor = vec3(color.x,color.y,color.z);
 	}
 )";
 
 	const std::string& fragmentShaderSrc = R"(
 	#version 460 core
+
+	#define M_PI 3.14159265
+
 	out vec4 FragColor;
 
 	//flat removes inteporlotian
@@ -104,7 +120,7 @@ unsigned int chessBoard::Run() {
 
 	while (!glfwWindowShouldClose(window)) {
 		processInput(window);
-		WireframeMode();
+		//WireframeMode();
 
 		glClearColor(ColorTools::FullColor[0] * 0.5f, ColorTools::FullColor[0] * 0.0f, ColorTools::FullColor[0] * 0.0f, ColorTools::Alpha[0]);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -112,8 +128,6 @@ unsigned int chessBoard::Run() {
 		vao.Bind();
 		//glDrawElements(GL_LINES, (GLsizei)indices.size() * 4, GL_UNSIGNED_INT, NULL);
 		glDrawElements(GL_TRIANGLES, (GLsizei)indices.size() * 3, GL_UNSIGNED_INT, NULL);
-
-
 
 		glfwPollEvents();
 		glfwSwapBuffers(window);
