@@ -8,6 +8,7 @@
 #include "Shader.h"
 #include "VertexArray.h"
 #include "VertexBuffer.h"
+#include "RenderCommands.h"
 
 class go3D : public GLFWApplication {
 

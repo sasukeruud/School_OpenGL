@@ -10,7 +10,7 @@ void go3D::processInput(GLFWwindow* window) {
 }
 
 unsigned int go3D::Run() {
-	int boardSize = 8;
+	int boardSize = 16;
 	std::vector<glm::vec3> vertices; //Full grid layout
 	std::vector<glm::vec3> verticies_color;
 	std::vector<glm::uvec3> indices; //Indicies
@@ -19,12 +19,11 @@ unsigned int go3D::Run() {
 	GeometricTools::GenGrid<std::vector<glm::vec3>, std::vector<glm::uvec3>>(boardSize, vertices, indices);
 
 	auto projectionMatrix = glm::perspective(glm::radians(45.0f), 1.0f, 1.0f, -10.f);
-
 	auto viewMatrix = glm::lookAt(glm::vec3(0, 0, 8), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 
 	glm::mat4 chessBoardMatrix = glm::mat4(1.0f);
 	auto chessBoardRotation = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(1.0f, .0f, .0f));
-	auto chessBoardTranslation = glm::translate(glm::mat4(1.0f), glm::vec3(-3.f, -.5f, 0.0f));
+	auto chessBoardTranslation = glm::translate(glm::mat4(1.0f), glm::vec3(-3.0f, -.5f, 0.0f));
 	auto chessBoardScale = glm::scale(glm::mat4(1.0f), glm::vec3(8.f,8.f,8.f));
 	chessBoardMatrix = chessBoardTranslation * chessBoardRotation * chessBoardScale;
 
@@ -140,7 +139,7 @@ unsigned int go3D::Run() {
 	uniform mat4 model;
 
 	//flat removes inteporlotian
-	flat out vec3 ourColor; 
+	out vec3 ourColor; 
 
 	void main()
 	{
@@ -158,42 +157,60 @@ unsigned int go3D::Run() {
 	out vec4 FragColor;
 
 	//flat removes inteporlotian
-	flat in vec3 ourColor;
+	in vec3 ourColor;
 
 	void main()
 	{
 			FragColor = vec4(ourColor, 1.0);
 	})";
 
+	auto vao_cube = VertexArray();
+	vao_cube.Bind();
+	auto vbo_cube = VertexBuffer();
+	auto vbo_vube_color = VertexBuffer();
+	vbo_cube.SetData(GeometricTools::UnitCube, sizeof(GeometricTools::UnitCube));
+	vbo_vube_color.SetData(ColorTools::UnitCubeDefaultColor, sizeof(ColorTools::UnitCubeDefaultColor));
+	vbo_cube.Bind();
+	vao_cube.AddVertexBuffer(0, 3, vbo_cube);
+	vbo_vube_color.Bind();
+	vao_cube.AddVertexBuffer(1, 3, vbo_vube_color);
+
 	auto shader = Shader::Shader(vertexShaderSrc, fragmentShaderSrc);
 	auto shader1 = Shader::Shader(vertexShaderSrc, fragmentShaderSrc);
 
+	auto testShader = std::make_shared<Shader>(vertexShaderSrc, fragmentShaderSrc);
+
 	shader.Bind();
 	shader.UseShader();
-	auto uniform_shader_model = shader.UniformLocation("model");
-	auto uniform_shader_view = shader.UniformLocation("u_view");
-	auto uniform_shader_projectin = shader.UniformLocation("u_projection");
-	glUniformMatrix4fv(uniform_shader_model, 1, GL_FALSE, glm::value_ptr(chessBoardMatrix));
-	glUniformMatrix4fv(uniform_shader_view, 1, GL_FALSE, glm::value_ptr(viewMatrix));
-	glUniformMatrix4fv(uniform_shader_projectin, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-
+	shader.UploadUniformMatrix4(shader.UniformLocation("model"), chessBoardMatrix);
+	shader.UploadUniformMatrix4(shader.UniformLocation("u_view"), viewMatrix);
+	shader.UploadUniformMatrix4(shader.UniformLocation("u_projection"), projectionMatrix);
 	
 	shader1.Bind();
 	shader1.UseShader();
+
+	glm::mat4 cubeMatrix = glm::mat4(1.0f);
+	auto cubeRotation = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(1.0f, .0f, .0f));
+	auto cubeTranslation = glm::translate(glm::mat4(1.0f), glm::vec3(.0f, -.5f, 0.0f));
+	auto cubeScale = glm::scale(glm::mat4(1.0f), glm::vec3(1.f, 1.f, 1.f));
+	chessBoardMatrix = cubeTranslation * cubeRotation * cubeScale;
+
 	auto uniform_shader1_model = shader1.UniformLocation("model");
 	auto uniform_shader1_view = shader1.UniformLocation("u_view");
 	auto uniform_shader1_projectin = shader1.UniformLocation("u_projection");
-	glUniformMatrix4fv(uniform_shader1_model, 1, GL_FALSE, glm::value_ptr(chessBoardMatrix));
+	glUniformMatrix4fv(uniform_shader1_model, 1, GL_FALSE, glm::value_ptr(cubeMatrix));
 	glUniformMatrix4fv(uniform_shader1_view, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 	glUniformMatrix4fv(uniform_shader1_projectin, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 	
+	RenderCommands::DepthRendering();
+
+	glm::vec3 background = glm::vec3(ColorTools::FullColor[0] * 0.5f, ColorTools::FullColor[0] * 0.0f, ColorTools::FullColor[0] * 0.0f);
+	RenderCommands::SetClearColor(background);
 	while (!glfwWindowShouldClose(window)) {
 		processInput(window);
-		//WireframeMode();
 		shader.UseShader();
-		glClearColor(ColorTools::FullColor[0] * 0.5f, ColorTools::FullColor[0] * 0.0f, ColorTools::FullColor[0] * 0.0f, ColorTools::Alpha[0]);
-		glClear(GL_COLOR_BUFFER_BIT);
-
+		
+		RenderCommands::Clear();
 		//White squares
 		vao_white.Bind();
 		glDrawArrays(GL_TRIANGLES, 0, 6 * white.size());
@@ -205,29 +222,38 @@ unsigned int go3D::Run() {
 		vao_black.Unbind();
 
 		//Selector on screen
-		shader1.UseShader();
 		vao_selector.Bind();
-		chessBoardMatrix = glm::translate(chessBoardMatrix, glm::vec3(0.f, .0f, .0f));
-		glUniformMatrix4fv(uniform_shader1_model, 1, GL_FALSE, glm::value_ptr(chessBoardMatrix));
-		if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-			chessBoardMatrix = glm::translate(chessBoardMatrix, glm::vec3((float)1/boardSize, .0f, .0f));
-			glUniformMatrix4fv(uniform_shader1_model, 1, GL_FALSE, glm::value_ptr(chessBoardMatrix));
-		}
-		if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-			chessBoardMatrix = glm::translate(chessBoardMatrix, glm::vec3(-(float)1 / boardSize, .0f, .0f));
-			glUniformMatrix4fv(uniform_shader1_model, 1, GL_FALSE, glm::value_ptr(chessBoardMatrix));
-		}
-		if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-			chessBoardMatrix = glm::translate(chessBoardMatrix, glm::vec3(.0f, (float)1 / boardSize, .0f));
-			glUniformMatrix4fv(uniform_shader1_model, 1, GL_FALSE, glm::value_ptr(chessBoardMatrix));
-		}
-		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-			chessBoardMatrix = glm::translate(chessBoardMatrix, glm::vec3(.0f, -(float)1 / boardSize, .0f));
-			glUniformMatrix4fv(uniform_shader1_model, 1, GL_FALSE, glm::value_ptr(chessBoardMatrix));
-		}
-		delay(50);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		vao_selector.Unbind();
+
+		vao_cube.Bind();
+		shader1.UseShader();
+		
+		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_TRUE) {
+			cubeMatrix = glm::rotate(cubeMatrix, glm::radians(50.0f), glm::vec3(1.0f, 1 / boardSize, .0f));
+			shader1.UploadUniformMatrix4(uniform_shader1_model, cubeMatrix);
+		}
+		if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_TRUE) {
+			cubeMatrix = glm::rotate(cubeMatrix, glm::radians(-50.0f), glm::vec3(1.0f, 1 / boardSize, .0f));
+			glUniformMatrix4fv(uniform_shader1_model, 1, GL_FALSE, glm::value_ptr(cubeMatrix));
+		}
+		if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_TRUE) {
+			cubeMatrix = glm::rotate(cubeMatrix, glm::radians(50.0f), glm::vec3(1 / boardSize, 1.0f, .0f));
+			glUniformMatrix4fv(uniform_shader1_model, 1, GL_FALSE, glm::value_ptr(cubeMatrix));
+		}
+		if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_TRUE) {
+			cubeMatrix = glm::rotate(cubeMatrix, glm::radians(-50.0f), glm::vec3(1 / boardSize, 1.0f, .0f));
+			glUniformMatrix4fv(uniform_shader1_model, 1, GL_FALSE, glm::value_ptr(cubeMatrix));
+		}
+		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_TRUE) {
+			cubeMatrix = glm::rotate(cubeMatrix, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(1.0f, 1.0f, .0f));
+			glUniformMatrix4fv(uniform_shader1_model, 1, GL_FALSE, glm::value_ptr(cubeMatrix));
+		}
+		delay(10);
+		RenderCommands::SetWireframeMode();
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		RenderCommands::SetFillMode();
+		//glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		glfwPollEvents();
 		glfwSwapBuffers(window);
