@@ -17,6 +17,8 @@ add_subdirectory(Engine)
 add_subdirectory(engineTest)
 add_subdirectory(lab1/HelloOpenGL)
 add_subdirectory(lab1/HelloOpenGL_v2)
-
 add_subdirectory(lab2)
+
+add_subdirectory(lab3)
+
 add_subdirectory(book/OpenGL)
