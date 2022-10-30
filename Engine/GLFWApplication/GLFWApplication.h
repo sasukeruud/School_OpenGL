@@ -45,5 +45,9 @@ public:
 	*/
 	virtual unsigned int FillMode();
 
+	/*
+	* Function to get a delay for next line of code to run.
+	* Normally for getting one input for each press and not multiple
+	*/
 	virtual void delay(unsigned int m_seconds);
 };
