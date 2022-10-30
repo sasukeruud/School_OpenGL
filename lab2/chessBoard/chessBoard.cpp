@@ -6,36 +6,24 @@
 
 void chessBoard::processInput(GLFWwindow* window) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) glfwSetWindowShouldClose(window, true);
-
-	//if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) std::cout << "Right" << std::endl;
-	//if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) std::cout << "Down" << std::endl;
-	//if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) std::cout << "Up" << std::endl;
-	//if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) std::cout << "Left" << std::endl;
 	delay(100);
 }
 
 unsigned int chessBoard::Run() {
 	int boardSize = 8;
 	std::vector<glm::vec3> vertices; //Full grid layout
-	std::vector<glm::vec3> verticies_color;
+	std::vector<glm::vec3> verticies_color; //Color for each vertex
 	std::vector<glm::uvec3> indices; //Indicies
-	std::vector<glm::uvec3> whiteIndicies;
-	GeometricTools::GenGrid<std::vector<glm::vec3>, std::vector<glm::uvec3>>(boardSize, vertices, indices);
-	
 	std::vector<glm::vec3> white; //Only white spaces
 	std::vector<glm::vec3> black; // Only black spaces
 
+	GeometricTools::GenGrid<std::vector<glm::vec3>, std::vector<glm::uvec3>>(boardSize, vertices, indices);
 
-
-
-	//glm::vec4 vec(1.0f, .0f, .0f, 1.0f);
+	//That is needed for translate
 	glm::mat4 trans = glm::mat4(1.0f);
 	trans = glm::translate(trans, glm::vec3(-.5f, -.5f, 0.0f));
 	//trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(.0f, .0f, 1.0f));
 	//trans = glm::scale(trans, glm::vec3(.5f,.5f,.5f));
-
-
-
 
 	bool whiteColor = true;
 	/*
@@ -109,7 +97,6 @@ unsigned int chessBoard::Run() {
 	vbo_color.SetData(glm::value_ptr(verticies_color[0]), (int)verticies_color.size() * sizeof(glm::vec3));
 	vbo_color.Bind();
 	vao_black.AddVertexBuffer(1, 3, vbo_color);
-	
 
 	vao_selector.Bind();
 	auto vbo_square = VertexBuffer();
@@ -136,7 +123,6 @@ unsigned int chessBoard::Run() {
 	vbo_square_color.SetData(GeometricTools::ColorSquare2D, sizeof(GeometricTools::ColorSquare2D));
 	vbo_square_color.Bind();
 	vao_selector.AddVertexBuffer(1,3,vbo_square_color);
-	
 
 	const std::string& vertexShaderSrc = R"(
 	#version 460
