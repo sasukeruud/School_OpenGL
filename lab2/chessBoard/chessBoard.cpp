@@ -4,14 +4,9 @@
 
 #define GLM_ENABLE_EXPERIMENTAL
 
-
-void delay(unsigned int m_seconds) {
-	clock_t goal = m_seconds + clock();
-	while (goal > clock());
-}
-
 void chessBoard::processInput(GLFWwindow* window) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) glfwSetWindowShouldClose(window, true);
+
 	//if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) std::cout << "Right" << std::endl;
 	//if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) std::cout << "Down" << std::endl;
 	//if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) std::cout << "Up" << std::endl;
@@ -208,6 +203,8 @@ unsigned int chessBoard::Run() {
 		
 		shader1.UseShader();
 		vao_selector.Bind();
+		trans = glm::translate(trans, glm::vec3(0.f, .0f, .0f));
+		glUniformMatrix4fv(uniform1, 1, GL_FALSE, glm::value_ptr(trans));
 		if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
 			trans = glm::translate(trans, glm::vec3((float)1/boardSize, .0f, .0f));
 			glUniformMatrix4fv(uniform1, 1, GL_FALSE, glm::value_ptr(trans));
@@ -224,6 +221,7 @@ unsigned int chessBoard::Run() {
 			trans = glm::translate(trans, glm::vec3(.0f, (float)1 / boardSize, .0f));
 			glUniformMatrix4fv(uniform1, 1, GL_FALSE, glm::value_ptr(trans));
 		}
+		delay(50);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		vao_selector.Unbind();
 
