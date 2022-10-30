@@ -44,4 +44,6 @@ public:
 	Body filled with color
 	*/
 	virtual unsigned int FillMode();
+
+	virtual void delay(unsigned int m_seconds);
 };

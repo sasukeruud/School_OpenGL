@@ -140,3 +140,8 @@ unsigned int GLFWApplication::FillMode() {
 	
 	return EXIT_SUCCESS;
 }
+
+void GLFWApplication::delay(unsigned int m_seconds) {
+	clock_t goal = m_seconds + clock();
+	while (goal > clock());
+}
