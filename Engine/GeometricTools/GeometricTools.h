@@ -12,10 +12,12 @@ namespace GeometricTools{
                                              0.5f, -0.5f, 0.0f,
                                              0.0f, 0.5f, 0.0f};
     //Array for normalized square
-    constexpr float UnitSquare2D[4*3] = {   0.5f, 0.5f, 0.0f,  
-                                            0.5f, -0.5f, 0.0f,
-                                            -0.5f, -0.5f, 0.0f, 
-                                            -0.5f, 0.5f, 0.0f };
+    constexpr float UnitSquare2D[6*3] = {   -0.5f, -0.5f, .0f,
+	                                         0.5f, -0.5f, .0f,
+	                                         0.5f,  0.5f, .0f,
+	                                         0.5f,  0.5f, .0f,
+	                                        -0.5f,  0.5f, .0f,
+	                                        -0.5f, -0.5f, .0f };
     //Color array for a triangle [3*3]
     constexpr float ColorTriangle2D[3*3] = {    1.0f, 0.0f, 0.0f,
                                                 0.0f, 1.0f, 0.0f, 
