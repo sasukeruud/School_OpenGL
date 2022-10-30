@@ -16,7 +16,6 @@ namespace GeometricTools{
                                             0.5f, -0.5f, 0.0f,
                                             -0.5f, -0.5f, 0.0f, 
                                             -0.5f, 0.5f, 0.0f };
-                                            
     //Color array for a triangle [3*3]
     constexpr float ColorTriangle2D[3*3] = {    1.0f, 0.0f, 0.0f,
                                                 0.0f, 1.0f, 0.0f, 
@@ -28,6 +27,49 @@ namespace GeometricTools{
                                             0.0f, 1.0f, 0.0f,
                                             0.0f, 1.0f, 0.0f,
                                             0.0f, 1.0f, 0.0f};
+    //Cube vertecies
+    constexpr float UnitCube[6*6*3] = { -0.5f, -0.5f, -0.5f,
+	                                     0.5f, -0.5f, -0.5f,
+	                                     0.5f,  0.5f, -0.5f,
+	                                     0.5f,  0.5f, -0.5f,
+	                                    -0.5f,  0.5f, -0.5f,
+	                                    -0.5f, -0.5f, -0.5f,
+
+	                                    -0.5f, -0.5f,  0.5f,
+	                                     0.5f, -0.5f,  0.5f,
+	                                     0.5f,  0.5f,  0.5f,
+	                                     0.5f,  0.5f,  0.5f,
+                                        -0.5f,  0.5f,  0.5f,
+                                        -0.5f, -0.5f,  0.5f,
+
+	                                    -0.5f,  0.5f,  0.5f,
+	                                    -0.5f,  0.5f, -0.5f,
+	                                    -0.5f, -0.5f, -0.5f,
+	                                    -0.5f, -0.5f, -0.5f,
+	                                    -0.5f, -0.5f,  0.5f,
+	                                    -0.5f,  0.5f,  0.5f,
+
+	                                     0.5f,  0.5f,  0.5f,
+	                                     0.5f,  0.5f, -0.5f,
+                                         0.5f, -0.5f, -0.5f,
+	                                     0.5f, -0.5f, -0.5f,
+	                                     0.5f, -0.5f,  0.5f,
+                                         0.5f,  0.5f,  0.5f,
+
+	                                    -0.5f, -0.5f, -0.5f,
+	                                     0.5f, -0.5f, -0.5f,
+	                                     0.5f, -0.5f,  0.5f,
+	                                     0.5f, -0.5f,  0.5f,
+	                                    -0.5f, -0.5f,  0.5f,
+	                                    -0.5f, -0.5f, -0.5f,
+
+	                                    -0.5f,  0.5f, -0.5f,
+	                                     0.5f,  0.5f, -0.5f,
+                                         0.5f,  0.5f,  0.5f,
+	                                     0.5f,  0.5f,  0.5f,
+	                                    -0.5f,  0.5f,  0.5f,
+	                                    -0.5f,  0.5f, -0.5f
+	                                    };
 
     //https://stackoverflow.com/questions/58494179/how-to-create-a-grid-in-opengl-and-drawing-it-with-lines
     template<class T, class U> void GenGrid(int N, T &verticies, U &indicies){
@@ -120,21 +162,6 @@ namespace GeometricTools{
 
                 //Triangle 2
                 indicies.push_back(glm::uvec3(row1 + i, row2 + i + 1, row2 + i));
-            }
-            
-        }
-    }
-
-    template<class T, class U> void GenColorGrid(int N, T &verticies, U &indicies){
-                int half_N = N/2;
-        for (float j = -(N/2); j <= (float)N/2; j++)
-        {
-            for (float i = -(N/2); i <= N/2; i++)
-            {
-                float r = 0.0f;
-                float g = 0.0f;
-                float b = 0.0f;
-                verticies.push_back(glm::vec3(r,g,b));
             }
             
         }
