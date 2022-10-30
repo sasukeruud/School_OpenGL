@@ -6,11 +6,6 @@
 
 void go3D::processInput(GLFWwindow* window) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) glfwSetWindowShouldClose(window, true);
-
-	//if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) std::cout << "Right" << std::endl;
-	//if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) std::cout << "Down" << std::endl;
-	//if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) std::cout << "Up" << std::endl;
-	//if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) std::cout << "Left" << std::endl;
 	delay(100);
 }
 
@@ -19,23 +14,19 @@ unsigned int go3D::Run() {
 	std::vector<glm::vec3> vertices; //Full grid layout
 	std::vector<glm::vec3> verticies_color;
 	std::vector<glm::uvec3> indices; //Indicies
-	std::vector<glm::uvec3> whiteIndicies;
-	GeometricTools::GenGrid<std::vector<glm::vec3>, std::vector<glm::uvec3>>(boardSize, vertices, indices);
-	
 	std::vector<glm::vec3> white; //Only white spaces
 	std::vector<glm::vec3> black; // Only black spaces
+	GeometricTools::GenGrid<std::vector<glm::vec3>, std::vector<glm::uvec3>>(boardSize, vertices, indices);
 
+	auto projectionMatrix = glm::perspective(glm::radians(45.0f), 1.0f, 1.0f, -10.f);
 
+	auto viewMatrix = glm::lookAt(glm::vec3(0, 0, 8), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 
-
-	//glm::vec4 vec(1.0f, .0f, .0f, 1.0f);
-	glm::mat4 trans = glm::mat4(1.0f);
-	trans = glm::translate(trans, glm::vec3(-.5f, -.5f, 0.0f));
-	//trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(.0f, .0f, 1.0f));
-	//trans = glm::scale(trans, glm::vec3(.5f,.5f,.5f));
-
-
-
+	glm::mat4 chessBoardMatrix = glm::mat4(1.0f);
+	auto chessBoardRotation = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(1.0f, .0f, .0f));
+	auto chessBoardTranslation = glm::translate(glm::mat4(1.0f), glm::vec3(-3.f, -.5f, 0.0f));
+	auto chessBoardScale = glm::scale(glm::mat4(1.0f), glm::vec3(8.f,8.f,8.f));
+	chessBoardMatrix = chessBoardTranslation * chessBoardRotation * chessBoardScale;
 
 	bool whiteColor = true;
 	/*
@@ -109,7 +100,6 @@ unsigned int go3D::Run() {
 	vbo_color.SetData(glm::value_ptr(verticies_color[0]), (int)verticies_color.size() * sizeof(glm::vec3));
 	vbo_color.Bind();
 	vao_black.AddVertexBuffer(1, 3, vbo_color);
-	
 
 	vao_selector.Bind();
 	auto vbo_square = VertexBuffer();
@@ -136,7 +126,6 @@ unsigned int go3D::Run() {
 	vbo_square_color.SetData(GeometricTools::ColorSquare2D, sizeof(GeometricTools::ColorSquare2D));
 	vbo_square_color.Bind();
 	vao_selector.AddVertexBuffer(1,3,vbo_square_color);
-	
 
 	const std::string& vertexShaderSrc = R"(
 	#version 460
@@ -145,15 +134,17 @@ unsigned int go3D::Run() {
 	
 	layout (location = 0) in vec3 pos;
 	layout (location = 1) in vec3 color;
-
-	uniform mat4 transform;
+	
+	uniform mat4 u_projection;
+	uniform mat4 u_view;
+	uniform mat4 model;
 
 	//flat removes inteporlotian
 	flat out vec3 ourColor; 
 
 	void main()
 	{
-		gl_Position = transform * vec4(pos,1.0);
+		gl_Position = u_projection * u_view * model * vec4(pos,1.0);
 		//gl_Position = vec4(pos,1.0) + center;
 		ourColor = vec3(color.x,color.y,color.z);
 	}
@@ -176,15 +167,26 @@ unsigned int go3D::Run() {
 
 	auto shader = Shader::Shader(vertexShaderSrc, fragmentShaderSrc);
 	auto shader1 = Shader::Shader(vertexShaderSrc, fragmentShaderSrc);
-	shader.Bind();
-	
-	shader.UseShader();
-	shader1.Bind();
-	auto uniform1 = shader1.UniformLocation("transform");
-	glUniformMatrix4fv(uniform1, 1, GL_FALSE, glm::value_ptr(trans));
-	
-	int pos = 0;
 
+	shader.Bind();
+	shader.UseShader();
+	auto uniform_shader_model = shader.UniformLocation("model");
+	auto uniform_shader_view = shader.UniformLocation("u_view");
+	auto uniform_shader_projectin = shader.UniformLocation("u_projection");
+	glUniformMatrix4fv(uniform_shader_model, 1, GL_FALSE, glm::value_ptr(chessBoardMatrix));
+	glUniformMatrix4fv(uniform_shader_view, 1, GL_FALSE, glm::value_ptr(viewMatrix));
+	glUniformMatrix4fv(uniform_shader_projectin, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+
+	
+	shader1.Bind();
+	shader1.UseShader();
+	auto uniform_shader1_model = shader1.UniformLocation("model");
+	auto uniform_shader1_view = shader1.UniformLocation("u_view");
+	auto uniform_shader1_projectin = shader1.UniformLocation("u_projection");
+	glUniformMatrix4fv(uniform_shader1_model, 1, GL_FALSE, glm::value_ptr(chessBoardMatrix));
+	glUniformMatrix4fv(uniform_shader1_view, 1, GL_FALSE, glm::value_ptr(viewMatrix));
+	glUniformMatrix4fv(uniform_shader1_projectin, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+	
 	while (!glfwWindowShouldClose(window)) {
 		processInput(window);
 		//WireframeMode();
@@ -192,34 +194,36 @@ unsigned int go3D::Run() {
 		glClearColor(ColorTools::FullColor[0] * 0.5f, ColorTools::FullColor[0] * 0.0f, ColorTools::FullColor[0] * 0.0f, ColorTools::Alpha[0]);
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		//White squares
 		vao_white.Bind();
 		glDrawArrays(GL_TRIANGLES, 0, 6 * white.size());
 		vao_white.Unbind();
 
+		//Black squares
 		vao_black.Bind();
 		glDrawArrays(GL_TRIANGLES, 0, 6 * black.size());
 		vao_black.Unbind();
 
-		
+		//Selector on screen
 		shader1.UseShader();
 		vao_selector.Bind();
-		trans = glm::translate(trans, glm::vec3(0.f, .0f, .0f));
-		glUniformMatrix4fv(uniform1, 1, GL_FALSE, glm::value_ptr(trans));
+		chessBoardMatrix = glm::translate(chessBoardMatrix, glm::vec3(0.f, .0f, .0f));
+		glUniformMatrix4fv(uniform_shader1_model, 1, GL_FALSE, glm::value_ptr(chessBoardMatrix));
 		if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-			trans = glm::translate(trans, glm::vec3((float)1/boardSize, .0f, .0f));
-			glUniformMatrix4fv(uniform1, 1, GL_FALSE, glm::value_ptr(trans));
+			chessBoardMatrix = glm::translate(chessBoardMatrix, glm::vec3((float)1/boardSize, .0f, .0f));
+			glUniformMatrix4fv(uniform_shader1_model, 1, GL_FALSE, glm::value_ptr(chessBoardMatrix));
 		}
 		if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-			trans = glm::translate(trans, glm::vec3(-(float)1 / boardSize, .0f, .0f));
-			glUniformMatrix4fv(uniform1, 1, GL_FALSE, glm::value_ptr(trans));
+			chessBoardMatrix = glm::translate(chessBoardMatrix, glm::vec3(-(float)1 / boardSize, .0f, .0f));
+			glUniformMatrix4fv(uniform_shader1_model, 1, GL_FALSE, glm::value_ptr(chessBoardMatrix));
 		}
 		if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-			trans = glm::translate(trans, glm::vec3(.0f, -(float)1 / boardSize, .0f));
-			glUniformMatrix4fv(uniform1, 1, GL_FALSE, glm::value_ptr(trans));
+			chessBoardMatrix = glm::translate(chessBoardMatrix, glm::vec3(.0f, (float)1 / boardSize, .0f));
+			glUniformMatrix4fv(uniform_shader1_model, 1, GL_FALSE, glm::value_ptr(chessBoardMatrix));
 		}
 		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-			trans = glm::translate(trans, glm::vec3(.0f, (float)1 / boardSize, .0f));
-			glUniformMatrix4fv(uniform1, 1, GL_FALSE, glm::value_ptr(trans));
+			chessBoardMatrix = glm::translate(chessBoardMatrix, glm::vec3(.0f, -(float)1 / boardSize, .0f));
+			glUniformMatrix4fv(uniform_shader1_model, 1, GL_FALSE, glm::value_ptr(chessBoardMatrix));
 		}
 		delay(50);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
