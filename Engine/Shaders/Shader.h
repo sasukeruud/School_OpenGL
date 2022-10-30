@@ -10,6 +10,7 @@
 //External libraries
 #include <glad/glad.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 class Shader {
 private:
@@ -92,6 +93,13 @@ public:
 	v4		: Fourth value of the uniform
 	*/
 	virtual void SetUniform4f(GLint location, float v1, float v2, float v3, float v4);
+
+	/*
+	* Function to set matrix uniform data
+	* uniform: uniform that is going to change
+	* matrix: data to set on uniform
+	*/
+	inline void UploadUniformMatrix4(GLint unifirm, glm::mat4 matrix){glUniformMatrix4fv(unifirm, 1, GL_FALSE, glm::value_ptr(matrix));}
 };
 
 #endif // ! SHADER_H
