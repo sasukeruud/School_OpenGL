@@ -114,7 +114,8 @@ unsigned int chessBoard::Run() {
 							 };
 
 	vbo_square.Bind();
-	vbo_square.SetData(squareCurosr, sizeof(squareCurosr));
+	//Fix scaling in shader
+	vbo_square.SetData(GeometricTools::UnitSquare2D, sizeof(GeometricTools::UnitSquare2D));
 	vbo_square.Bind();
 	vao_selector.AddVertexBuffer(0, 3, vbo_square);
 
@@ -134,13 +135,11 @@ unsigned int chessBoard::Run() {
 
 	uniform mat4 transform;
 
-	//flat removes inteporlotian
 	flat out vec3 ourColor; 
 
 	void main()
 	{
 		gl_Position = transform * vec4(pos,1.0);
-		//gl_Position = vec4(pos,1.0) + center;
 		ourColor = vec3(color.x,color.y,color.z);
 	}
 )";
@@ -186,7 +185,6 @@ unsigned int chessBoard::Run() {
 		glDrawArrays(GL_TRIANGLES, 0, 6 * black.size());
 		vao_black.Unbind();
 
-		
 		shader1.UseShader();
 		vao_selector.Bind();
 		trans = glm::translate(trans, glm::vec3(0.f, .0f, .0f));
