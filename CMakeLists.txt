@@ -10,6 +10,7 @@ add_subdirectory(External/tclap)
 add_subdirectory(External/GLFW)
 add_subdirectory(External/glad)
 add_subdirectory(External/glm)
+add_subdirectory(External/stb)
 
 #########################
 add_subdirectory(Engine)
@@ -17,6 +18,7 @@ add_subdirectory(Engine)
 add_subdirectory(engineTest)
 add_subdirectory(lab1/HelloOpenGL)
 add_subdirectory(lab1/HelloOpenGL_v2)
+add_subdirectory(lab1/HelloOpenGL_v3)
 add_subdirectory(lab2)
 
 add_subdirectory(lab3)
