@@ -50,7 +50,7 @@ public:
 	index	: index number of vertex attribute
 	size	: How many components per vertex
 	*/
-	void AddVertexBuffer(GLuint index, GLint size, const IndexBuffer& indexBuffer);
+	void AddIndexBuffer(GLuint index, GLint size, const IndexBuffer& indexBuffer);
 	// Set index buffer
 	//void SetIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer);
 

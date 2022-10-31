@@ -28,7 +28,7 @@ void VertexArray::AddVertexBuffer(GLuint index, GLint size, const VertexBuffer& 
 	glEnableVertexAttribArray(index);
 }
 
-void VertexArray::AddVertexBuffer(GLuint index, GLint size, const IndexBuffer& indexBuffer) {
+void VertexArray::AddIndexBuffer(GLuint index, GLint size, const IndexBuffer& indexBuffer) {
 	glVertexAttribPointer(index,
 		size,
 		GL_FLOAT,
