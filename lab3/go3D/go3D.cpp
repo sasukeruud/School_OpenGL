@@ -10,7 +10,7 @@ void go3D::processInput(GLFWwindow* window) {
 }
 
 unsigned int go3D::Run() {
-	int boardSize = 16;
+	int boardSize = 8;
 	std::vector<glm::vec3> vertices; //Full grid layout
 	std::vector<glm::vec3> verticies_color;
 	std::vector<glm::uvec3> indices; //Indicies
@@ -144,7 +144,6 @@ unsigned int go3D::Run() {
 	void main()
 	{
 		gl_Position = u_projection * u_view * model * vec4(pos,1.0);
-		//gl_Position = vec4(pos,1.0) + center;
 		ourColor = vec3(color.x,color.y,color.z);
 	}
 )";
@@ -203,6 +202,7 @@ unsigned int go3D::Run() {
 	glUniformMatrix4fv(uniform_shader1_projectin, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 	
 	RenderCommands::DepthRendering();
+	auto origo = glm::vec3(.0f, .0f, 0.0f);
 
 	glm::vec3 background = glm::vec3(ColorTools::FullColor[0] * 0.5f, ColorTools::FullColor[0] * 0.0f, ColorTools::FullColor[0] * 0.0f);
 	RenderCommands::SetClearColor(background);
@@ -230,11 +230,11 @@ unsigned int go3D::Run() {
 		shader1.UseShader();
 		
 		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_TRUE) {
-			cubeMatrix = glm::rotate(cubeMatrix, glm::radians(50.0f), glm::vec3(1.0f, 1 / boardSize, .0f));
+			cubeMatrix = glm::rotate(cubeMatrix, glm::radians(-50.0f), glm::vec3(1.0f, 1 / boardSize, .0f));
 			shader1.UploadUniformMatrix4(uniform_shader1_model, cubeMatrix);
 		}
 		if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_TRUE) {
-			cubeMatrix = glm::rotate(cubeMatrix, glm::radians(-50.0f), glm::vec3(1.0f, 1 / boardSize, .0f));
+			cubeMatrix = glm::rotate(cubeMatrix, glm::radians(50.0f), glm::vec3(1.0f, 1 / boardSize, .0f));
 			glUniformMatrix4fv(uniform_shader1_model, 1, GL_FALSE, glm::value_ptr(cubeMatrix));
 		}
 		if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_TRUE) {
@@ -250,9 +250,9 @@ unsigned int go3D::Run() {
 			glUniformMatrix4fv(uniform_shader1_model, 1, GL_FALSE, glm::value_ptr(cubeMatrix));
 		}
 		delay(10);
-		RenderCommands::SetWireframeMode();
+		//RenderCommands::SetWireframeMode();
 		glDrawArrays(GL_TRIANGLES, 0, 36);
-		RenderCommands::SetFillMode();
+		//RenderCommands::SetFillMode();
 		//glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		glfwPollEvents();
