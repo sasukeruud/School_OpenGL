@@ -5,6 +5,18 @@
 
 namespace RenderCommands{
     /*
+    How many point in a triangle
+    */
+    constexpr unsigned int TriangleSize{3};
+    /*
+    How many points in a square
+    */
+    constexpr unsigned int SquareSize{6};
+    /*
+    How many points in a cube
+    */
+    constexpr unsigned int CubeSize{36};
+    /*
     * Clear buffer data
     */
     inline void Clear(GLuint mode = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT){ glClear(mode); }
@@ -35,6 +47,10 @@ namespace RenderCommands{
     size: indicate how many points to be drawn
     */
     inline void DrawTriangle(GLsizei size){ glDrawArrays(GL_TRIANGLES, 0, size);}
+    /*
+    Draws out a single cube to the screen
+    */
+    inline void DrawCube(){glDrawArrays(GL_TRIANGLES, 0, CubeSize);}
     //inline void DrawIndex(const std::shared_ptr<VertexArray>& vao, GLenum primitive){ glDrawElements(primitive, vao->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr); }
 
 }
