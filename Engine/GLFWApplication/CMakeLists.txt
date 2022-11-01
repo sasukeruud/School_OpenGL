@@ -1,13 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(GLFWApplication)        
-
-
-#add_executable(          
-#  GLFWApplication            
-#  GLFWApplication.cpp                                        
-#)
-
+project(GLFWApplication)       
 
 
 add_library(GLFWApplication GLFWApplication.h GLFWApplication.cpp)

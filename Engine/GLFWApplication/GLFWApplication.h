@@ -34,18 +34,6 @@ public:
 	virtual unsigned int Destroy();
 
 	/*
-	Function to enter wireframe mode for drawing out on screen.
-	Fill not fill the drawing, but only the lines.
-	*/
-	virtual unsigned int WireframeMode();
-
-	/*
-	Function to enable drawing the whole figure out.
-	Body filled with color
-	*/
-	virtual unsigned int FillMode();
-
-	/*
 	* Function to get a delay for next line of code to run.
 	* Normally for getting one input for each press and not multiple
 	*/
