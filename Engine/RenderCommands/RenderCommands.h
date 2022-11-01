@@ -30,8 +30,11 @@ namespace RenderCommands{
     * For rendering 3D
     */
     inline void DepthRendering(){glEnable(GL_DEPTH_TEST);}
-
-    
+    /*
+    Draws a triangle
+    size: indicate how many points to be drawn
+    */
+    inline void DrawTriangle(GLsizei size){ glDrawArrays(GL_TRIANGLES, 0, size);}
     //inline void DrawIndex(const std::shared_ptr<VertexArray>& vao, GLenum primitive){ glDrawElements(primitive, vao->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr); }
 
 }
