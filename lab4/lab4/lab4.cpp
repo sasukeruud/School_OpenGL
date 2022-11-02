@@ -9,8 +9,35 @@ void lab4::processInput(GLFWwindow* window) {
 	delay(100);
 }
 
+GLuint LoadTexture(std::string imagePath) {
+	std::string filePath = std::string(TEXTURES_DIR) + imagePath;
+
+	int width, height, bpp;
+	auto pixels = stbi_load(filePath.c_str(), &width, &height, &bpp, STBI_rgb_alpha);
+	if (!pixels) {
+		std::cout << "Failed to load texture" << std::endl;
+		return EXIT_FAILURE;
+	}
+
+	GLuint tex;
+	glGenTextures(1, &tex);
+	glActiveTexture(GL_TEXTURE0 + 0);
+	glBindTexture(GL_TEXTURE_2D, tex);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	if (pixels) stbi_image_free(pixels);
+
+	return tex;
+}
+
 unsigned int lab4::Run() {
-	int boardSize = 16;
+	int boardSize = 8;
 	std::vector<glm::vec3> vertices; //Full grid layout
 	std::vector<glm::vec3> verticies_color;
 	std::vector<glm::uvec3> indices; //Indicies
@@ -184,9 +211,11 @@ unsigned int lab4::Run() {
 	auto cubeScale = glm::scale(glm::mat4(1.0f), glm::vec3(1.f, 1.f, 1.f));
 	chessBoardMatrix = cubeTranslation * cubeRotation * cubeScale;
 
+	auto cubeViewMatrix = glm::lookAt(glm::vec3(0, 0, 8), glm::vec3(0, -.5f, 0), glm::vec3(0, 1, 0));
+
 	auto uniform_shader1_model = shader1->UniformLocation("model");
 	shader1->UploadUniformMatrix4(uniform_shader1_model, cubeMatrix);
-	shader1->UploadUniformMatrix4(shader1->UniformLocation("u_view"), viewMatrix);
+	shader1->UploadUniformMatrix4(shader1->UniformLocation("u_view"), cubeViewMatrix);
 	shader1->UploadUniformMatrix4(shader1->UniformLocation("u_projection"), projectionMatrix);
 	
 	RenderCommands::DepthRendering();
@@ -200,45 +229,45 @@ unsigned int lab4::Run() {
 		RenderCommands::Clear();
 		//White squares
 		vao_white->Bind();
-		glDrawArrays(GL_TRIANGLES, 0, 6 * white.size());
+		RenderCommands::DrawTriangle(RenderCommands::SquareSize * white.size());
 		vao_white->Unbind();
 
 		//Black squares
 		vao_black->Bind();
-		glDrawArrays(GL_TRIANGLES, 0, 6 * black.size());
+		RenderCommands::DrawTriangle(RenderCommands::SquareSize * black.size());
 		vao_black->Unbind();
 
 		//Selector on screen
 		vao_selector->Bind();
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+		RenderCommands::DrawTriangle(RenderCommands::SquareSize);
 		vao_selector->Unbind();
 
 		vao_cube->Bind();
 		shader1->UseShader();
 		
 		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_TRUE) {
-			cubeMatrix = glm::rotate(cubeMatrix, glm::radians(50.0f), glm::vec3(1.0f, 1 / boardSize, .0f));
+			cubeMatrix = glm::rotate(cubeMatrix, glm::radians(50.0f), glm::vec3(1.0f, .0f, .0f));
 			shader1->UploadUniformMatrix4(uniform_shader1_model, cubeMatrix);
 		}
 		if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_TRUE) {
-			cubeMatrix = glm::rotate(cubeMatrix, glm::radians(-50.0f), glm::vec3(1.0f, 1 / boardSize, .0f));
+			cubeMatrix = glm::rotate(cubeMatrix, glm::radians(-50.0f), glm::vec3(1.0f, .0f, .0f));
 			shader1->UploadUniformMatrix4(uniform_shader1_model, cubeMatrix);
 		}
 		if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_TRUE) {
-			cubeMatrix = glm::rotate(cubeMatrix, glm::radians(50.0f), glm::vec3(1 / boardSize, 1.0f, .0f));
+			cubeMatrix = glm::rotate(cubeMatrix, glm::radians(50.0f), glm::vec3(0.f, 1.0f, .0f));
 			shader1->UploadUniformMatrix4(uniform_shader1_model, cubeMatrix);
 		}
 		if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_TRUE) {
-			cubeMatrix = glm::rotate(cubeMatrix, glm::radians(-50.0f), glm::vec3(1 / boardSize, 1.0f, .0f));
+			cubeMatrix = glm::rotate(cubeMatrix, glm::radians(-50.0f), glm::vec3(.0f, 1.0f, .0f));
 			shader1->UploadUniformMatrix4(uniform_shader1_model, cubeMatrix);
 		}
 		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_TRUE) {
-			cubeMatrix = glm::rotate(cubeMatrix, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(1.0f, 1.0f, .0f));
+			cubeMatrix = glm::rotate(glm::mat4(1.f), glm::radians(50.0f), glm::vec3(1.0f, 1.0f, .0f));
 			shader1->UploadUniformMatrix4(uniform_shader1_model, cubeMatrix);
 		}
 		delay(10);
 		//RenderCommands::SetWireframeMode();
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		RenderCommands::DrawCube();
 		//RenderCommands::SetFillMode();
 		//glDrawArrays(GL_TRIANGLES, 0, 36);
 		vao_cube->Unbind();
