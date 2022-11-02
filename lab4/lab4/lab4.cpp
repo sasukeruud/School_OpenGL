@@ -225,6 +225,8 @@ unsigned int lab4::Run() {
 	while (!glfwWindowShouldClose(window)) {
 		processInput(window);
 		shader->UseShader();
+		auto cubeMatrixRotationX = glm::mat4(1.f);
+		auto cubeMatrixRotationY = glm::mat4(1.f);
 		
 		RenderCommands::Clear();
 		//White squares
@@ -246,25 +248,19 @@ unsigned int lab4::Run() {
 		shader1->UseShader();
 		
 		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_TRUE) {
-			cubeMatrix = glm::rotate(cubeMatrix, glm::radians(50.0f), glm::vec3(1.0f, .0f, .0f));
-			shader1->UploadUniformMatrix4(uniform_shader1_model, cubeMatrix);
+			cubeMatrixRotationY = glm::rotate(glm::mat4(1.f), glm::radians(-5.0f), glm::vec3(1.0f, .0f, .0f));
 		}
 		if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_TRUE) {
-			cubeMatrix = glm::rotate(cubeMatrix, glm::radians(-50.0f), glm::vec3(1.0f, .0f, .0f));
-			shader1->UploadUniformMatrix4(uniform_shader1_model, cubeMatrix);
+			cubeMatrixRotationY = glm::rotate(glm::mat4(1.f), glm::radians(5.0f), glm::vec3(1.0f, .0f, .0f));
 		}
 		if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_TRUE) {
-			cubeMatrix = glm::rotate(cubeMatrix, glm::radians(50.0f), glm::vec3(0.f, 1.0f, .0f));
-			shader1->UploadUniformMatrix4(uniform_shader1_model, cubeMatrix);
+			cubeMatrixRotationX = glm::rotate(glm::mat4(1.f), glm::radians(5.0f), glm::vec3(.0f, 1.0f, .0f));
 		}
 		if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_TRUE) {
-			cubeMatrix = glm::rotate(cubeMatrix, glm::radians(-50.0f), glm::vec3(.0f, 1.0f, .0f));
-			shader1->UploadUniformMatrix4(uniform_shader1_model, cubeMatrix);
+			cubeMatrixRotationX = glm::rotate(glm::mat4(1.f), glm::radians(-5.0f), glm::vec3(.0f, 1.0f, .0f));
 		}
-		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_TRUE) {
-			cubeMatrix = glm::rotate(glm::mat4(1.f), glm::radians(50.0f), glm::vec3(1.0f, 1.0f, .0f));
-			shader1->UploadUniformMatrix4(uniform_shader1_model, cubeMatrix);
-		}
+		cubeMatrix = cubeMatrixRotationX * cubeMatrixRotationY * cubeMatrix;
+		shader1->UploadUniformMatrix4(uniform_shader1_model, cubeMatrix);
 		delay(10);
 		//RenderCommands::SetWireframeMode();
 		RenderCommands::DrawCube();
