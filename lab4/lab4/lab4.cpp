@@ -38,12 +38,14 @@ GLuint LoadTexture(std::string imagePath) {
 
 unsigned int lab4::Run() {
 	int boardSize = 8;
-	std::vector<glm::vec3> vertices; //Full grid layout
+	std::vector<glm::vec4> vertices; //Full grid layout
 	std::vector<glm::vec3> verticies_color;
 	std::vector<glm::uvec3> indices; //Indicies
-	std::vector<glm::vec3> white; //Only white spaces
-	std::vector<glm::vec3> black; // Only black spaces
-	GeometricTools::GenGrid<std::vector<glm::vec3>, std::vector<glm::uvec3>>(boardSize, vertices, indices);
+	std::vector<glm::vec2> white; //Only white spaces
+	std::vector<glm::vec2> white_texture;
+	std::vector<glm::vec2> black; // Only black spaces
+	std::vector<glm::vec2> black_texture;
+	GeometricTools::GenGridTexture<std::vector<glm::vec4>, std::vector<glm::uvec3>>(boardSize, vertices, indices);
 
 	auto projectionMatrix = glm::perspective(glm::radians(45.0f), 1.0f, 1.0f, -10.f);
 	auto viewMatrix = glm::lookAt(glm::vec3(0, 0, 8), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
@@ -62,25 +64,41 @@ unsigned int lab4::Run() {
 	for (int i = 0; i < indices.size() - 1; i++)
 	{
 		if (whiteColor) {
-			white.push_back(glm::vec3(vertices[indices[i].x].x, vertices[indices[i].x].y, vertices[indices[i].x].z));
-			white.push_back(glm::vec3(vertices[indices[i].y].x, vertices[indices[i].y].y, vertices[indices[i].y].z));
-			white.push_back(glm::vec3(vertices[indices[i].z].x, vertices[indices[i].z].y, vertices[indices[i].z].z));
+			white.push_back(glm::vec2(vertices[indices[i].x].x, vertices[indices[i].x].y));
+			white.push_back(glm::vec2(vertices[indices[i].y].x, vertices[indices[i].y].y));
+			white.push_back(glm::vec2(vertices[indices[i].z].x, vertices[indices[i].z].y));
 
-			white.push_back(glm::vec3(vertices[indices[i + 1].x].x, vertices[indices[i + 1].x].y, vertices[indices[i + 1].x].z));
-			white.push_back(glm::vec3(vertices[indices[i + 1].y].x, vertices[indices[i + 1].y].y, vertices[indices[i + 1].y].z));
-			white.push_back(glm::vec3(vertices[indices[i + 1].z].x, vertices[indices[i + 1].z].y, vertices[indices[i + 1].z].z));
+			white_texture.push_back(glm::vec2(vertices[indices[i].x].z, vertices[indices[i].x].w));
+			white_texture.push_back(glm::vec2(vertices[indices[i].y].z, vertices[indices[i].y].w));
+			white_texture.push_back(glm::vec2(vertices[indices[i].z].z, vertices[indices[i].z].w));
+
+			white.push_back(glm::vec2(vertices[indices[i + 1].x].x, vertices[indices[i + 1].x].y));
+			white.push_back(glm::vec2(vertices[indices[i + 1].y].x, vertices[indices[i + 1].y].y));
+			white.push_back(glm::vec2(vertices[indices[i + 1].z].x, vertices[indices[i + 1].z].y));
 			
+			white_texture.push_back(glm::vec2(vertices[indices[i + 1].x].z, vertices[indices[i + 1].x].w));
+			white_texture.push_back(glm::vec2(vertices[indices[i + 1].y].z, vertices[indices[i + 1].y].w));
+			white_texture.push_back(glm::vec2(vertices[indices[i + 1].z].z, vertices[indices[i + 1].z].w));
+
 			whiteColor = false;
 			i++; //Moves one additonall block to the right
 		}
 		else {
-			black.push_back(glm::vec3(vertices[indices[i].x].x, vertices[indices[i].x].y, vertices[indices[i].x].z));
-			black.push_back(glm::vec3(vertices[indices[i].y].x, vertices[indices[i].y].y, vertices[indices[i].y].z));
-			black.push_back(glm::vec3(vertices[indices[i].z].x, vertices[indices[i].z].y, vertices[indices[i].z].z));
+			black.push_back(glm::vec2(vertices[indices[i].x].x, vertices[indices[i].x].y));
+			black.push_back(glm::vec2(vertices[indices[i].y].x, vertices[indices[i].y].y));
+			black.push_back(glm::vec2(vertices[indices[i].z].x, vertices[indices[i].z].y));
 
-			black.push_back(glm::vec3(vertices[indices[i + 1].x].x, vertices[indices[i + 1].x].y, vertices[indices[i + 1].x].z));
-			black.push_back(glm::vec3(vertices[indices[i + 1].y].x, vertices[indices[i + 1].y].y, vertices[indices[i + 1].y].z));
-			black.push_back(glm::vec3(vertices[indices[i + 1].z].x, vertices[indices[i + 1].z].y, vertices[indices[i + 1].z].z));
+			black_texture.push_back(glm::vec2(vertices[indices[i].x].z, vertices[indices[i].x].w));
+			black_texture.push_back(glm::vec2(vertices[indices[i].y].z, vertices[indices[i].y].w));
+			black_texture.push_back(glm::vec2(vertices[indices[i].z].z, vertices[indices[i].z].w));
+
+			black.push_back(glm::vec2(vertices[indices[i + 1].x].x, vertices[indices[i + 1].x].y));
+			black.push_back(glm::vec2(vertices[indices[i + 1].y].x, vertices[indices[i + 1].y].y));
+			black.push_back(glm::vec2(vertices[indices[i + 1].z].x, vertices[indices[i + 1].z].y));
+
+			black_texture.push_back(glm::vec2(vertices[indices[i + 1].x].z, vertices[indices[i + 1].x].w));
+			black_texture.push_back(glm::vec2(vertices[indices[i + 1].y].z, vertices[indices[i + 1].y].w));
+			black_texture.push_back(glm::vec2(vertices[indices[i + 1].z].z, vertices[indices[i + 1].z].w));
 			
 			whiteColor = true;
 			i++; //Moves one additonall block to the right
@@ -98,7 +116,7 @@ unsigned int lab4::Run() {
 
 	vbo->SetData(glm::value_ptr(white[0]), (int)white.size() * sizeof(glm::vec3));
 	vbo->Bind();
-	vao_white->AddVertexBuffer(0, 3, *vbo);
+	vao_white->AddVertexBuffer(0, 2, *vbo);
 	vbo->Unbind();
 	
 	for (int i = 0; i < white.size(); i++)
@@ -106,15 +124,16 @@ unsigned int lab4::Run() {
 		verticies_color.push_back(glm::vec3(ColorTools::FullColor[0], ColorTools::FullColor[0], ColorTools::FullColor[0]));
 	}
 
-	vbo_color->SetData(glm::value_ptr(verticies_color[0]), (int)verticies_color.size() * sizeof(glm::vec3));
+	//vbo_color->SetData(glm::value_ptr(verticies_color[0]), (int)verticies_color.size() * sizeof(glm::vec3));
+	vbo_color->SetData(glm::value_ptr(white_texture[0]), white_texture.size() * sizeof(glm::vec2));
 	vbo_color->Bind();
-	vao_white->AddVertexBuffer(1, 3, *vbo_color);
+	vao_white->AddVertexBuffer(1, 2, *vbo_color);
 	vbo_color->Unbind();
 
 	vao_black->Bind();
-	vbo->SetData(glm::value_ptr(black[0]), (int)black.size() * sizeof(glm::vec3));
+	vbo->SetData(glm::value_ptr(black[0]), (int)black.size() * sizeof(glm::vec2));
 	vbo->Bind();
-	vao_black->AddVertexBuffer(0, 3, *vbo);
+	vao_black->AddVertexBuffer(0, 2, *vbo);
 	vbo->Unbind();
 
 	verticies_color.clear();
@@ -124,14 +143,16 @@ unsigned int lab4::Run() {
 		verticies_color.push_back(glm::vec3(ColorTools::NoneColor[0], ColorTools::NoneColor[0], ColorTools::NoneColor[0]));
 	}
 
-	vbo_color->SetData(glm::value_ptr(verticies_color[0]), (int)verticies_color.size() * sizeof(glm::vec3));
+	//vbo_color->SetData(glm::value_ptr(verticies_color[0]), (int)verticies_color.size() * sizeof(glm::vec3));
+	vbo_color->SetData(glm::value_ptr(black_texture[0]), black_texture.size() * sizeof(glm::vec2));
 	vbo_color->Bind();
-	vao_black->AddVertexBuffer(1, 3, *vbo_color);
+	vao_black->AddVertexBuffer(1, 2, *vbo_color);
 	vbo_color->Unbind();
 
 	vao_selector->Bind();
 	auto vbo_square = std::make_shared<VertexBuffer>();
 
+	/*
 	vbo_square->Bind();
 	vbo_square->SetData(GeometricTools::UnitCube, sizeof(GeometricTools::UnitCube));
 	vao_selector->AddVertexBuffer(0, 3, *vbo_square);
@@ -139,9 +160,9 @@ unsigned int lab4::Run() {
 	auto vbo_square_color = std::make_shared<VertexBuffer>();
 	vbo_square_color->Bind();
 	vbo_square_color->SetData(GeometricTools::ColorSquare2D, sizeof(GeometricTools::ColorSquare2D));
-	vao_selector->AddVertexBuffer(1,3,*vbo_square_color);
+	vao_selector->AddVertexBuffer(1,3,*vbo_square_color);*/
 
-	const std::string& vertexShaderSrc = R"(
+	const std::string& vertexShaderCube = R"(
 	#version 460
 
 	#define center vec4(-0.5,-0.5,0,0)
@@ -164,10 +185,31 @@ unsigned int lab4::Run() {
 	}
 )";
 
-	const std::string& fragmentShaderSrc = R"(
-	#version 460 core
+	const std::string& vertexShaderFloor = R"(
+	#version 460
 
-	#define M_PI 3.14159265
+	#define center vec4(-0.5,-0.5,0,0)
+	
+	layout (location = 0) in vec2 pos;
+	layout (location = 1) in vec2 tcoords;
+	
+	uniform mat4 u_projection;
+	uniform mat4 u_view;
+	uniform mat4 model;
+
+	//flat removes inteporlotian
+	out vec2 vs_tcoords; 
+
+	void main()
+	{
+		gl_Position = u_projection * u_view * model * vec4(pos,0.0,1.0);
+		//gl_Position = vec4(pos,1.0) + center;
+		vs_tcoords = tcoords;
+	}
+)";
+
+	const std::string& fragmentShaderCube = R"(
+	#version 460 core
 
 	out vec4 FragColor;
 
@@ -178,6 +220,21 @@ unsigned int lab4::Run() {
 	{
 			FragColor = vec4(ourColor, 1.0);
 	})";
+
+	const std::string& fragmentShaderFloor = R"(
+	#version 460 core
+
+	out vec4 FragColor;
+
+	//flat removes inteporlotian
+	in vec2 vs_tcoords;
+	layout(binding = 0) uniform sampler2D u_floorTextureSampler;
+
+	void main()
+	{
+			FragColor = texture(u_floorTextureSampler, vs_tcoords);
+	}
+)";
 
 	auto vao_cube = std::make_shared<VertexArray>();
 	vao_cube->Bind();
@@ -193,14 +250,15 @@ unsigned int lab4::Run() {
 	vbo_vube_color->Bind();
 	vao_cube->AddVertexBuffer(1, 3, *vbo_vube_color);
 
-	auto shader = std::make_shared<Shader>(vertexShaderSrc, fragmentShaderSrc);
-	auto shader1 = std::make_shared<Shader>(vertexShaderSrc, fragmentShaderSrc);
+	auto shader = std::make_shared<Shader>(vertexShaderFloor, fragmentShaderFloor);
+	auto shader1 = std::make_shared<Shader>(vertexShaderCube, fragmentShaderCube);
 
 	shader->Bind();
 	shader->UseShader();
 	shader->UploadUniformMatrix4(shader->UniformLocation("model"), chessBoardMatrix);
 	shader->UploadUniformMatrix4(shader->UniformLocation("u_view"), viewMatrix);
 	shader->UploadUniformMatrix4(shader->UniformLocation("u_projection"), projectionMatrix);
+	shader->UploadUniformInt(shader->UniformLocation("u_floorTextureSampler"), 0);
 	
 	shader1->Bind();
 	shader1->UseShader();
@@ -227,7 +285,7 @@ unsigned int lab4::Run() {
 		shader->UseShader();
 		auto cubeMatrixRotationX = glm::mat4(1.f);
 		auto cubeMatrixRotationY = glm::mat4(1.f);
-		
+		LoadTexture("awsomeface.png");
 		RenderCommands::Clear();
 		//White squares
 		vao_white->Bind();
