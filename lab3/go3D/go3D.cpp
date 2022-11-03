@@ -209,51 +209,47 @@ unsigned int go3D::Run() {
 	while (!glfwWindowShouldClose(window)) {
 		processInput(window);
 		shader.UseShader();
-		
+		auto cubeMatrixRotationX = glm::mat4(1.f);
+		auto cubeMatrixRotationY = glm::mat4(1.f);
 		RenderCommands::Clear();
 		//White squares
 		vao_white.Bind();
-		glDrawArrays(GL_TRIANGLES, 0, 6 * white.size());
+		RenderCommands::DrawTriangle(RenderCommands::SquareSize* white.size());
 		vao_white.Unbind();
 
 		//Black squares
 		vao_black.Bind();
-		glDrawArrays(GL_TRIANGLES, 0, 6 * black.size());
+		RenderCommands::DrawTriangle(RenderCommands::SquareSize* black.size());
 		vao_black.Unbind();
 
 		//Selector on screen
 		vao_selector.Bind();
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+		RenderCommands::DrawTriangle(RenderCommands::SquareSize);
 		vao_selector.Unbind();
 
 		vao_cube.Bind();
 		shader1.UseShader();
-		
+
 		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_TRUE) {
-			cubeMatrix = glm::rotate(cubeMatrix, glm::radians(-50.0f), glm::vec3(1.0f, 1 / boardSize, .0f));
-			shader1.UploadUniformMatrix4(uniform_shader1_model, cubeMatrix);
+			cubeMatrixRotationY = glm::rotate(glm::mat4(1.f), glm::radians(-5.0f), glm::vec3(1.0f, .0f, .0f));
 		}
 		if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_TRUE) {
-			cubeMatrix = glm::rotate(cubeMatrix, glm::radians(50.0f), glm::vec3(1.0f, 1 / boardSize, .0f));
-			glUniformMatrix4fv(uniform_shader1_model, 1, GL_FALSE, glm::value_ptr(cubeMatrix));
+			cubeMatrixRotationY = glm::rotate(glm::mat4(1.f), glm::radians(5.0f), glm::vec3(1.0f, .0f, .0f));
 		}
 		if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_TRUE) {
-			cubeMatrix = glm::rotate(cubeMatrix, glm::radians(50.0f), glm::vec3(1 / boardSize, 1.0f, .0f));
-			glUniformMatrix4fv(uniform_shader1_model, 1, GL_FALSE, glm::value_ptr(cubeMatrix));
+			cubeMatrixRotationX = glm::rotate(glm::mat4(1.f), glm::radians(5.0f), glm::vec3(.0f, 1.0f, .0f));
 		}
 		if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_TRUE) {
-			cubeMatrix = glm::rotate(cubeMatrix, glm::radians(-50.0f), glm::vec3(1 / boardSize, 1.0f, .0f));
-			glUniformMatrix4fv(uniform_shader1_model, 1, GL_FALSE, glm::value_ptr(cubeMatrix));
+			cubeMatrixRotationX = glm::rotate(glm::mat4(1.f), glm::radians(-5.0f), glm::vec3(.0f, 1.0f, .0f));
 		}
-		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_TRUE) {
-			cubeMatrix = glm::rotate(cubeMatrix, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(1.0f, 1.0f, .0f));
-			glUniformMatrix4fv(uniform_shader1_model, 1, GL_FALSE, glm::value_ptr(cubeMatrix));
-		}
+		cubeMatrix = cubeMatrixRotationX * cubeMatrixRotationY * cubeMatrix;
+		shader1.UploadUniformMatrix4(uniform_shader1_model, cubeMatrix);
 		delay(10);
 		//RenderCommands::SetWireframeMode();
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		RenderCommands::DrawCube();
 		//RenderCommands::SetFillMode();
 		//glDrawArrays(GL_TRIANGLES, 0, 36);
+		vao_cube.Unbind();
 
 		glfwPollEvents();
 		glfwSwapBuffers(window);
