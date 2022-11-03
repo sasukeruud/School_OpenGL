@@ -84,6 +84,8 @@ public:
 	*/
 	virtual GLint UniformLocation(const GLchar* uniformName);
 
+	inline void UploadUniformInt(GLint uniform, int i) { glUniform1i(uniform, i); }
+
 	/*
 	Function to set data of an uniform
 	location: Location of where to uniform is
