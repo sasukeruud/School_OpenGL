@@ -1,4 +1,5 @@
-#pragma once
+#ifndef VERTEXBUFFER_H_
+#define VERTEXBUFFER_H_
 
 //Standard libraries
 #include <iostream>
@@ -71,3 +72,4 @@ public:
 	void BufferSubData(GLintptr offset, GLsizeiptr size, const void* data) const;
 
 };
+#endif VERTEXBUFFER_H_
