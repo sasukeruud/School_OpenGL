@@ -1,4 +1,5 @@
-#pragma once
+#ifndef RENDERCOMMANDS_H_
+#define RENDERCOMMANFS_H_
 
 #include <glad/glad.h>
 #include "VertexArray.h"
@@ -54,3 +55,4 @@ namespace RenderCommands{
     //inline void DrawIndex(const std::shared_ptr<VertexArray>& vao, GLenum primitive){ glDrawElements(primitive, vao->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr); }
 
 }
+#endif RENDERCOMMANDS_H_
