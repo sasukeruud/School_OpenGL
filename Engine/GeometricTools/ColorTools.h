@@ -1,4 +1,5 @@
-#pragma once
+#ifndef COLORTOOLS_H_
+#define COLORTOOLS_H_
 
 namespace ColorTools{
     constexpr float FullColor[1] = {1.0f};
@@ -48,3 +49,4 @@ namespace ColorTools{
                                                     .5f,  .5f,.5f,
                                                     .5f,  .5f,.5f};
 }
+#endif COLORTOOLS_H_
