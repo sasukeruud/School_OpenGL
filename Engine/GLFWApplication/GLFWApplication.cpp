@@ -1,4 +1,5 @@
 //project includes
+#include <tclap/CmdLine.h>
 #include "GLFWApplication.h"
 
 //Function to exit the window with esc button while in the loop
