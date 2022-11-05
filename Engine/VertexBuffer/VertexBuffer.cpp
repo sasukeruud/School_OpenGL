@@ -1,6 +1,3 @@
-//Standard libraries
-#include <iostream>
-
 //Engine libraries
 #include "VertexBuffer.h"
 
