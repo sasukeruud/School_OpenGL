@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GEOMETRICTOOLS_H_
+#define GEOMETRICTOOLS_H_
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -175,3 +176,4 @@ namespace GeometricTools{
         }
     }
 }
+#endif GEOMETRICTOOLS_H_
