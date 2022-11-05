@@ -1,4 +1,5 @@
-#pragma once
+#ifndef VERTEXARRAY_H_
+#define VERTEXARRAY_H_
 
 //Standard C++ libraries
 #include <iostream>
@@ -57,3 +58,4 @@ public:
 	//Get the index buffer
 	//const std::shared_ptr<IndexBuffer>& GetIndexBuffer() const { return IdxBuffer; }
 };
+#endif VERTEXARRAY_H_
