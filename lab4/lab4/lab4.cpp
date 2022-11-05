@@ -9,11 +9,11 @@ void lab4::processInput(GLFWwindow* window) {
 	delay(100);
 }
 
-GLuint LoadTexture(std::string imagePath) {
+GLuint LoadTexture(std::string imagePath, int slot) {
 	std::string filePath = std::string(TEXTURES_DIR) + imagePath;
 
 	int width, height, bpp;
-	auto pixels = stbi_load(filePath.c_str(), &width, &height, &bpp, STBI_rgb_alpha);
+	auto *pixels = stbi_load(filePath.c_str(), &width, &height, &bpp, STBI_rgb_alpha);
 	if (!pixels) {
 		std::cout << "Failed to load texture" << std::endl;
 		return EXIT_FAILURE;
@@ -21,7 +21,7 @@ GLuint LoadTexture(std::string imagePath) {
 
 	GLuint tex;
 	glGenTextures(1, &tex);
-	glActiveTexture(GL_TEXTURE0 + 0);
+	glActiveTexture(GL_TEXTURE0 + slot);
 	glBindTexture(GL_TEXTURE_2D, tex);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 
@@ -34,6 +34,37 @@ GLuint LoadTexture(std::string imagePath) {
 	if (pixels) stbi_image_free(pixels);
 
 	return tex;
+}
+
+
+GLuint LoadCubeMap(std::string imagePath, int slot) {
+	std::string filePath = std::string(TEXTURES_DIR) + imagePath;
+
+	int width, height, bpp;
+	auto* pixels = stbi_load(filePath.c_str(), &width, &height, &bpp, STBI_rgb_alpha);
+	if (!pixels) {
+		std::cout << "Failed to load texture" << std::endl;
+		return EXIT_FAILURE;
+	}
+
+	GLuint tex;
+	glGenTextures(1, &tex);
+	glActiveTexture(GL_TEXTURE0 + slot);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, tex);
+
+	for (unsigned int i = 0; i < 6; i++)
+	{
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+	}
+
+	//Wrapping
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_REPEAT);
+	//Filtering
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
 }
 
 unsigned int lab4::Run() {
@@ -168,20 +199,21 @@ unsigned int lab4::Run() {
 	#define center vec4(-0.5,-0.5,0,0)
 	
 	layout (location = 0) in vec3 pos;
-	layout (location = 1) in vec3 color;
+	//layout (location = 1) in vec3 color;
 	
 	uniform mat4 u_projection;
 	uniform mat4 u_view;
 	uniform mat4 model;
 
 	//flat removes inteporlotian
-	out vec3 ourColor; 
+	//out vec3 ourColor; 
+	out vec3 vs_position;
 
 	void main()
 	{
 		gl_Position = u_projection * u_view * model * vec4(pos,1.0);
-		//gl_Position = vec4(pos,1.0) + center;
-		ourColor = vec3(color.x,color.y,color.z);
+		//ourColor = vec3(color.x,color.y,color.z);
+		vs_position = pos;
 	}
 )";
 
@@ -203,7 +235,6 @@ unsigned int lab4::Run() {
 	void main()
 	{
 		gl_Position = u_projection * u_view * model * vec4(pos,0.0,1.0);
-		//gl_Position = vec4(pos,1.0) + center;
 		vs_tcoords = tcoords;
 	}
 )";
@@ -211,14 +242,16 @@ unsigned int lab4::Run() {
 	const std::string& fragmentShaderCube = R"(
 	#version 460 core
 
+	layout(binding=1) uniform samplerCube uTexture;
+
 	out vec4 FragColor;
 
 	//flat removes inteporlotian
-	in vec3 ourColor;
+	in vec3 vs_position;
 
 	void main()
 	{
-			FragColor = vec4(ourColor, 1.0);
+			FragColor = texture(uTexture, vs_position);
 	})";
 
 	const std::string& fragmentShaderFloor = R"(
@@ -285,7 +318,7 @@ unsigned int lab4::Run() {
 		shader->UseShader();
 		auto cubeMatrixRotationX = glm::mat4(1.f);
 		auto cubeMatrixRotationY = glm::mat4(1.f);
-		LoadTexture("awsomeface.png");
+		LoadTexture("wall.jpg",0);
 		RenderCommands::Clear();
 		//White squares
 		vao_white->Bind();
@@ -298,24 +331,26 @@ unsigned int lab4::Run() {
 		vao_black->Unbind();
 
 		//Selector on screen
+		/*
 		vao_selector->Bind();
 		RenderCommands::DrawTriangle(RenderCommands::SquareSize);
 		vao_selector->Unbind();
+		*/
 
 		vao_cube->Bind();
 		shader1->UseShader();
-		
+		LoadCubeMap("awesomeface.png", 1);
 		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_TRUE) {
-			cubeMatrixRotationY = glm::rotate(glm::mat4(1.f), glm::radians(-5.0f), glm::vec3(1.0f, .0f, .0f));
+			cubeMatrixRotationY = glm::rotate(glm::mat4(1.f), glm::radians(-8.0f), glm::vec3(1.0f, .0f, .0f));
 		}
 		if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_TRUE) {
-			cubeMatrixRotationY = glm::rotate(glm::mat4(1.f), glm::radians(5.0f), glm::vec3(1.0f, .0f, .0f));
+			cubeMatrixRotationY = glm::rotate(glm::mat4(1.f), glm::radians(8.0f), glm::vec3(1.0f, .0f, .0f));
 		}
 		if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_TRUE) {
-			cubeMatrixRotationX = glm::rotate(glm::mat4(1.f), glm::radians(5.0f), glm::vec3(.0f, 1.0f, .0f));
+			cubeMatrixRotationX = glm::rotate(glm::mat4(1.f), glm::radians(8.0f), glm::vec3(.0f, 1.0f, .0f));
 		}
 		if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_TRUE) {
-			cubeMatrixRotationX = glm::rotate(glm::mat4(1.f), glm::radians(-5.0f), glm::vec3(.0f, 1.0f, .0f));
+			cubeMatrixRotationX = glm::rotate(glm::mat4(1.f), glm::radians(-8.0f), glm::vec3(.0f, 1.0f, .0f));
 		}
 		cubeMatrix = cubeMatrixRotationX * cubeMatrixRotationY * cubeMatrix;
 		shader1->UploadUniformMatrix4(uniform_shader1_model, cubeMatrix);
