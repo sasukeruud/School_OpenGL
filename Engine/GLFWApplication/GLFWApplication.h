@@ -1,4 +1,9 @@
+#ifndef GLFWAPPLICATION_H_
+#define GLFWAPPLICATION_H_
+
 #include <iostream>
+//External includes
+#include <tclap/CmdLine.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -39,3 +44,4 @@ public:
 	*/
 	virtual void delay(unsigned int m_seconds);
 };
+#endif GLFWAPPLICATION_H_
