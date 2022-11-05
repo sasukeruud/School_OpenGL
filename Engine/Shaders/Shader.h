@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef  SHADER_H
 #define SHADER_H
 
@@ -104,4 +102,4 @@ public:
 	inline void UploadUniformMatrix4(GLint unifirm, glm::mat4 matrix){glUniformMatrix4fv(unifirm, 1, GL_FALSE, glm::value_ptr(matrix));}
 };
 
-#endif // ! SHADER_H
+#endif SHADER_H
