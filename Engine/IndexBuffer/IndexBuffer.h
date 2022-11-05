@@ -1,4 +1,5 @@
-#pragma once
+#ifndef INDEXBUFFER_H_
+#define INDEXBUFFER_H_
 
 #include <iostream>
 
@@ -39,3 +40,4 @@ public:
 	inline GLuint GetCount() const { return Count; }
 
 };
+#endif INDEXBUFFER_H_
