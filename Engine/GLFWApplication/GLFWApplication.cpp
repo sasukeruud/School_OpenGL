@@ -1,8 +1,3 @@
-#include <iostream>
-//External includes
-#include <tclap/CmdLine.h>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 //project includes
 #include "GLFWApplication.h"
 
@@ -72,12 +67,6 @@ unsigned int GLFWApplication::Init(const char* title) {
 			glfwTerminate();
 			return EXIT_FAILURE;
 		}
-
-
-		//Depricated
-		//Addes key_callback for shortcut when window is open
-		//glfwSetKeyCallback(window, key_callback);
-
 
 		//Adds resize to window
 		glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
