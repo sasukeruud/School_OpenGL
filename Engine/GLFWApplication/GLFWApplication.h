@@ -1,9 +1,9 @@
 #ifndef GLFWAPPLICATION_H_
 #define GLFWAPPLICATION_H_
 
+//c++ standard library
 #include <iostream>
 //External includes
-
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
