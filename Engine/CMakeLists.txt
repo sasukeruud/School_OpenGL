@@ -8,5 +8,7 @@ add_subdirectory(VertexBuffer)
 add_subdirectory(VertexArray)
 add_subdirectory(Shaders)
 add_subdirectory(RenderCommands)
+add_subdirectory(TextureManager)
+
 
 
