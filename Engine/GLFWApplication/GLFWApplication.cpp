@@ -25,9 +25,7 @@ unsigned int GLFWApplication::ParseArguments(int argc, char **argv) {
 
 		//New command line agruments for executebl
 		TCLAP::ValueArg<std::string> widthArg("w", "width=", "Width of window", false, "600", "string"); //Argument to change width of window
-		TCLAP::ValueArg<std::string> heightArg("H", "height=", "height of window", false, "600", "string");	//Argument to change height of window
-		TCLAP::SwitchArg triangleArg("t", "triangle", "Draw a triangle", cmd, false); 	//Drawing triangle	:: Will be removed
-		TCLAP::SwitchArg squareArg("s", "square", "Draw a square", cmd, false);			//Drawing square	:: Will be removed
+		TCLAP::ValueArg<std::string> heightArg("g", "height=", "height of window", false, "600", "string");	//Argument to change height of window
 		TCLAP::SwitchArg consoleArg("c", "console", "console", cmd, false);
 
 		//Adding arguments for the command line
