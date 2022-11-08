@@ -199,21 +199,20 @@ unsigned int lab4::Run() {
 	#define center vec4(-0.5,-0.5,0,0)
 	
 	layout (location = 0) in vec3 pos;
-	//layout (location = 1) in vec3 color;
+	layout (location = 1) in vec3 color;
 	
 	uniform mat4 u_projection;
 	uniform mat4 u_view;
 	uniform mat4 model;
 
-	//flat removes inteporlotian
-	//out vec3 ourColor; 
 	out vec3 vs_position;
+	out vec3 vs_color;
 
 	void main()
 	{
 		gl_Position = u_projection * u_view * model * vec4(pos,1.0);
-		//ourColor = vec3(color.x,color.y,color.z);
 		vs_position = pos;
+		vs_color = color;
 	}
 )";
 
@@ -229,7 +228,6 @@ unsigned int lab4::Run() {
 	uniform mat4 u_view;
 	uniform mat4 model;
 
-	//flat removes inteporlotian
 	out vec2 vs_tcoords; 
 
 	void main()
@@ -246,12 +244,12 @@ unsigned int lab4::Run() {
 
 	out vec4 FragColor;
 
-	//flat removes inteporlotian
 	in vec3 vs_position;
+	in vec3 vs_color;
 
 	void main()
 	{
-			FragColor = texture(uTexture, vs_position);
+			FragColor = texture(uTexture, vs_position); 
 	})";
 
 	const std::string& fragmentShaderFloor = R"(
@@ -259,7 +257,6 @@ unsigned int lab4::Run() {
 
 	out vec4 FragColor;
 
-	//flat removes inteporlotian
 	in vec2 vs_tcoords;
 	layout(binding = 0) uniform sampler2D u_floorTextureSampler;
 
@@ -310,6 +307,8 @@ unsigned int lab4::Run() {
 	shader1->UploadUniformMatrix4(shader1->UniformLocation("u_projection"), projectionMatrix);
 	
 	RenderCommands::DepthRendering();
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC0_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glm::vec3 background = glm::vec3(ColorTools::FullColor[0] * 0.5f, ColorTools::FullColor[0] * 0.0f, ColorTools::FullColor[0] * 0.0f);
 	RenderCommands::SetClearColor(background);
